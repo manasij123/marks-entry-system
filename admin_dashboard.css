@@ -1,47 +1,25 @@
-/* admin_dashboard.html এর জন্য নির্দিষ্ট স্টাইল */
-
-.content-wrapper {
-    background: #fff;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-.content-wrapper h2 {
-    margin-top: 0;
-    margin-bottom: 1.5rem;
-    border-bottom: 2px solid #eee;
-    padding-bottom: 1rem;
-}
-
-/* marks-table এর স্টাইল dashboard.css থেকে ব্যবহার করা হচ্ছে */
-
-/* Tab Navigation */
+/* Admin specific styles */
 .tab-nav {
-    overflow: hidden;
-    border-bottom: 1px solid #ccc;
-    margin-bottom: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    border-bottom: 2px solid #ccc;
+    margin-bottom: 1.5rem;
 }
 
-.tab-nav button {
-    background-color: inherit;
-    float: left;
+.tab-link {
+    background: none;
     border: none;
-    outline: none;
+    padding: 10px 20px;
     cursor: pointer;
-    padding: 14px 20px;
-    transition: 0.3s;
-    font-size: 17px;
-    font-weight: 500;
+    font-size: 1rem;
     font-family: 'Hind Siliguri', sans-serif;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
 }
 
-.tab-nav button:hover {
-    background-color: #f1f1f1;
-}
-
-.tab-nav button.active {
-    border-bottom: 3px solid #007bff;
+.tab-link.active {
+    border-bottom-color: #007bff;
+    font-weight: 600;
     color: #007bff;
 }
 
@@ -49,76 +27,39 @@
     display: none;
 }
 
-.student-form textarea {
+.content-wrapper {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    overflow-x: auto; /* This makes the tables scrollable */
+}
+
+.marks-table {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 1rem;
-    font-family: 'Hind Siliguri', sans-serif;
-}
-
-.upload-status {
+    border-collapse: collapse;
     margin-top: 1rem;
-    font-weight: 500;
 }
 
-.student-details-display {
-    margin-top: 2rem;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
+.marks-table th, .marks-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+    white-space: nowrap; /* Prevents text from wrapping */
 }
 
-.student-list-section h3 {
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid #ddd;
+.marks-table th {
+    background-color: #f2f2f2;
 }
 
+.student-details-display, .consolidated-marks-display {
+    margin-top: 1.5rem;
+    overflow-x: auto;
+}
+
+/* --- Responsive Design for Admin Dashboard --- */
 @media (max-width: 768px) {
-    .student-details-display {
-        grid-template-columns: 1fr;
+    .content-wrapper {
+        padding: 1rem;
     }
-}
-
-.consolidated-marks-display {
-    margin-top: 2rem;
-    overflow-x: auto; /* বড় টেবিলের জন্য হরাইজন্টাল স্ক্রোল */
-}
-
-.action-btn {
-    padding: 5px 10px;
-    border: none;
-    border-radius: 4px;
-    color: white;
-    cursor: pointer;
-    margin-right: 5px;
-}
-.btn-delete {
-    background-color: #dc3545;
-}
-.btn-reset {
-    background-color: #ffc107;
-    color: #212529;
-}
-.btn-print {
-    background-color: #17a2b8;
-}
-
-.badge {
-    background-color: #dc3545;
-    color: white;
-    border-radius: 50%;
-    padding: 2px 6px;
-    font-size: 12px;
-    vertical-align: top;
-    margin-left: 5px;
-}
-
-.btn-approve {
-    background-color: #28a745;
-}
-
-.editable-mark {
-    width: 60px;
 }

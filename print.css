@@ -1,0 +1,33 @@
+/* print.css - Styles for printing */
+@media print {
+    /* Hide everything by default */
+    body * {
+        visibility: hidden;
+    }
+
+    /* Make only the marksheet container and its content visible */
+    #consolidated-marks-display, #consolidated-marks-display * {
+        visibility: visible;
+    }
+
+    /* Position the marksheet at the top of the page */
+    #consolidated-marks-display {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        border: none;
+        box-shadow: none;
+    }
+
+    /* Ensure table styles are print-friendly */
+    .marks-table {
+        font-size: 10pt;
+    }
+
+    .marks-table th, .marks-table td {
+        border: 1px solid #000 !important; /* Ensure borders are black for printing */
+    }
+}
