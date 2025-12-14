@@ -2,3 +2,10 @@
 node_modules/
 # Ignore environment variables file
 .env
+
+# Ignore old data files and screenshots
+*.json
+!package.json
+!package-lock.json
+*.jpg
+*.png
