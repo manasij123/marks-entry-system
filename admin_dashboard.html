@@ -27,9 +27,9 @@
     <main class="container">
         <!-- Tab navigation -->
         <div class="tab-nav">
-            <button class="tab-link active" onclick="openTab(event, 'TeachersDetails')">শিক্ষকদের তালিকা</button>
-            <button class="tab-link" onclick="openTab(event, 'AddStudents')">ছাত্রছাত্রী যোগ করুন</button>
-            <button class="tab-link" onclick="openTab(event, 'ViewStudents')">ছাত্রছাত্রীর তালিকা দেখুন</button>
+            <button class="tab-link active" onclick="openTab(event, 'TeachersDetails')">শিক্ষিকাদের তালিকা</button>
+            <button class="tab-link" onclick="openTab(event, 'AddStudents')">ছাত্রী যোগ করুন</button>
+            <button class="tab-link" onclick="openTab(event, 'ViewStudents')">ছাত্রীর তালিকা দেখুন</button>
             <button class="tab-link" onclick="openTab(event, 'ViewAllMarks')">সকল নম্বর দেখুন</button>
             <button class="tab-link" onclick="openTab(event, 'UnlockRequests')">আনলক অনুরোধ <span id="request-count-badge" class="badge" style="display:none;"></span></button>
         </div>
@@ -37,12 +37,12 @@
         <!-- Tab 1: Teachers Details -->
         <div id="TeachersDetails" class="tab-content" style="display: block;">
             <div class="content-wrapper">
-                <h2>নিবন্ধিত শিক্ষকদের তালিকা</h2>
+                <h2>নিবন্ধিত শিক্ষিকাদের তালিকা</h2>
                 <table class="marks-table">
                     <thead>
                         <tr>
                             <th>ক্রমিক নং</th>
-                            <th>শিক্ষকের নাম</th>
+                            <th>শিক্ষিকার নাম</th>
                             <th>বিষয়</th>
                             <th>ইউনিক আইডি</th>
                             <th>পাসওয়ার্ড</th>
@@ -50,7 +50,7 @@
                         </tr>
                     </thead>
                     <tbody id="teachers-list-body">
-                        <!-- শিক্ষকদের তালিকা এখানে জাভাস্ক্রিপ্ট দিয়ে যোগ করা হবে -->
+                        <!-- শিক্ষিকাদের তালিকা এখানে জাভাস্ক্রিপ্ট দিয়ে যোগ করা হবে -->
                     </tbody>
                 </table>
             </div>
@@ -59,7 +59,7 @@
         <!-- Tab 2: Add Students -->
         <div id="AddStudents" class="tab-content">
             <div class="content-wrapper">
-                <h2>নতুন ছাত্রছাত্রী যোগ করুন</h2>
+                <h2>নতুন ছাত্রী যোগ করুন</h2>
                 <form id="studentAddForm" class="student-form">
                     <div class="control-group">
                         <label for="year">শিক্ষাবর্ষ নির্বাচন করুন</label>
@@ -73,8 +73,8 @@
                         </select>
                     </div>
                     <div class="control-group">
-                        <label for="studentNames">ছাত্রছাত্রীদের নাম (কমা দিয়ে আলাদা করুন)</label>
-                        <textarea id="studentNames" rows="10" placeholder="যেমন: Amit Roy, Bimal Das, ..." required></textarea>
+                        <label for="studentNames">ছাত্রীদের নাম (কমা দিয়ে আলাদা করুন)</label>
+                        <textarea id="studentNames" rows="10" placeholder="যেমন: রিতা দাস, মিতা পাল, ..." required></textarea>
                     </div>
                     <button type="submit" class="btn">আপলোড করুন</button>
                 </form>
@@ -85,7 +85,7 @@
         <!-- Tab 3: View Students -->
         <div id="ViewStudents" class="tab-content">
             <div class="content-wrapper">
-                <h2>ছাত্রছাত্রীর তালিকা দেখুন</h2>
+                <h2>ছাত্রীর তালিকা দেখুন</h2>
                 <div class="controls-container" style="padding: 0; box-shadow: none;">
                     <div class="control-group">
                         <label for="viewYear">শিক্ষাবর্ষ নির্বাচন করুন</label>
@@ -123,7 +123,7 @@
                 <table class="marks-table">
                     <thead>
                         <tr>
-                            <th>শিক্ষকের নাম</th>
+                            <th>শিক্ষিকার নাম</th>
                             <th>বিষয়</th>
                             <th>শিক্ষাবর্ষ</th>
                             <th>সেকশন</th>

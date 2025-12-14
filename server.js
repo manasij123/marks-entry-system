@@ -98,8 +98,8 @@ app.post('/api/login', async (req, res) => {
     const { uniqueId, password } = req.body;
     const currentYear = new Date().getFullYear();
     if (uniqueId === 'cl_admin' && password === `Admin@${currentYear}`) {
-        console.log('Admin logged in.');
-        return res.json({ success: true, isAdmin: true, user: { uniqueId: 'cl_admin', fullName: 'Class Teacher (Admin)' } });
+        console.log('Admin logged in.'); // Log can remain in English
+        return res.json({ success: true, isAdmin: true, user: { uniqueId: 'cl_admin', fullName: 'শ্রেণী শিক্ষিকা (অ্যাডমিন)' } });
     }
 
     try {
@@ -132,7 +132,7 @@ app.post('/api/students', async (req, res) => {
             { upsert: true }
         );
         console.log(`Students updated for ${year}, Section ${section}.`);
-        res.status(200).json({ message: `সফলভাবে ${students.length} জন ছাত্রছাত্রীর তথ্য যোগ করা হয়েছে।` });
+        res.status(200).json({ message: `সফলভাবে ${students.length} জন ছাত্রীর তথ্য যোগ করা হয়েছে।` });
     } catch (error) {
         res.status(500).json({ message: 'সার্ভারে ত্রুটি দেখা দিয়েছে।' });
     }
@@ -280,9 +280,9 @@ app.delete('/api/teachers/:id', async (req, res) => {
     const { id } = req.params;
     const result = await db.collection('teachers').deleteOne({ _id: id });
     if (result.deletedCount > 0) {
-        res.json({ message: 'শিক্ষককে সফলভাবে ডিলিট করা হয়েছে।' });
+        res.json({ message: 'শিক্ষিকাকে সফলভাবে ডিলিট করা হয়েছে।' });
     } else {
-        res.status(404).json({ message: 'শিক্ষককে খুঁজে পাওয়া যায়নি।' });
+        res.status(404).json({ message: 'শিক্ষিকাকে খুঁজে পাওয়া যায়নি।' });
     }
 });
 
