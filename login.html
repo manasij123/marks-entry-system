@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>লগইন</title>
+    <link rel="stylesheet" href="style.css">
+</head><body>
+    <div class="form-container">
+        <h2>মার্কস এন্ট্রি সিস্টেমে লগইন করুন</h2>
+        <form id="loginForm">
+            <div class="input-group">
+                <label for="uniqueId">ইউনিক আইডি</label>
+                <input type="text" id="uniqueId" name="uniqueId" placeholder="আপনার ইউনিক আইডি লিখুন" required>
+            </div>
+            <div class="input-group">
+                <label for="password">পাসওয়ার্ড</label>
+                <input type="password" id="password" name="password" placeholder="আপনার পাসওয়ার্ড লিখুন" required>
+            </div>
+            <button type="submit" class="btn">লগইন</button>
+        </form>
+        <div class="bottom-text">
+            <p>Don't have an account? <a href="register.html">রেজিস্টার করুন</a></p>
+        </div>
+    </div>
+    <script src="auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>শিক্ষক রেজিস্ট্রেশন</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="form-container">
+        <h2>শিক্ষক রেজিস্ট্রেশন</h2>
+        <form id="registerForm">
+            <div class="input-group">
+                <label for="fullName">সম্পূর্ণ নাম</label>
+                <input type="text" id="fullName" name="fullName" placeholder="আপনার পুরো নাম লিখুন" required>
+            </div>
+            <div class="input-group">
+                <label for="subject">বিষয়</label>
+                <select id="subject" name="subject" required>
+                    <option value="" disabled selected>একটি বিষয় নির্বাচন করুন</option>
+                    <option value="BENG">Bengali</option>
+                    <option value="ENGL">English</option>
+                    <option value="MATH">Mathematics</option>
+                    <option value="PHSC">Physical Science</option>
+                    <option value="LISC">Life Science</option>
+                    <option value="HIST">History</option>
+                    <option value="GEGR">Geography</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="password">পাসওয়ার্ড</label>
+                <input type="password" id="password" name="password" placeholder="একটি শক্তিশালী পাসওয়ার্ড তৈরি করুন" required>
+            </div>
+            <button type="submit" class="btn">রেজিস্টার করুন</button>
+        </form>
+        <div class="bottom-text">
+            <p>Already have an account? <a href="login.html">লগইন করুন</a></p>
+        </div>
+        <!-- Unique ID দেখানোর জন্য পপ-আপ -->
+        <div id="uniqueIdPopup" class="popup" style="display: none;">
+            <div class="popup-content">
+                <h3>আপনার রেজিস্ট্রেশন সফল হয়েছে!</h3>
+                <p>আপনার ইউনিক আইডি হলো: <strong id="generatedId"></strong></p>
+                <p>অনুগ্রহ করে এই আইডিটি কপি করে রাখুন। এই বার্তাটি <span id="countdown">60</span> সেকেন্ড পর বন্ধ হয়ে যাবে।</p>
+            </div>
+        </div>
+    </div>
+    <script src="auth.js"></script>
+</body>
+</html>

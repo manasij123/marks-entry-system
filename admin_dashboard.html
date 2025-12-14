@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>অ্যাডমিন ড্যাশবোর্ড</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dashboard.css"> <!-- Reusing dashboard styles -->
+    <link rel="stylesheet" href="admin_dashboard.css"> <!-- Admin specific styles -->
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <h3>অ্যাডমিন ড্যাশবোর্ড</h3>
+        </div>
+        <div class="user-menu">
+            <span id="userFullName">অ্যাডমিন</span>
+            <div class="dropdown">
+                <button class="dropbtn">⚙️</button>
+                <div class="dropdown-content">
+                    <a href="#" onclick="logout()">লগআউট</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Tab navigation -->
+        <div class="tab-nav">
+            <button class="tab-link active" onclick="openTab(event, 'TeachersDetails')">শিক্ষকদের তালিকা</button>
+            <button class="tab-link" onclick="openTab(event, 'AddStudents')">ছাত্রছাত্রী যোগ করুন</button>
+            <button class="tab-link" onclick="openTab(event, 'ViewStudents')">ছাত্রছাত্রীর তালিকা দেখুন</button>
+            <button class="tab-link" onclick="openTab(event, 'ViewAllMarks')">সকল নম্বর দেখুন</button>
+            <button class="tab-link" onclick="openTab(event, 'UnlockRequests')">আনলক অনুরোধ <span id="request-count-badge" class="badge" style="display:none;"></span></button>
+        </div>
+
+        <!-- Tab 1: Teachers Details -->
+        <div id="TeachersDetails" class="tab-content" style="display: block;">
+            <div class="content-wrapper">
+                <h2>নিবন্ধিত শিক্ষকদের তালিকা</h2>
+                <table class="marks-table">
+                    <thead>
+                        <tr>
+                            <th>ক্রমিক নং</th>
+                            <th>শিক্ষকের নাম</th>
+                            <th>বিষয়</th>
+                            <th>ইউনিক আইডি</th>
+                            <th>পাসওয়ার্ড</th>
+                        <th>কার্যকলাপ (Actions)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="teachers-list-body">
+                        <!-- শিক্ষকদের তালিকা এখানে জাভাস্ক্রিপ্ট দিয়ে যোগ করা হবে -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Tab 2: Add Students -->
+        <div id="AddStudents" class="tab-content">
+            <div class="content-wrapper">
+                <h2>নতুন ছাত্রছাত্রী যোগ করুন</h2>
+                <form id="studentAddForm" class="student-form">
+                    <div class="control-group">
+                        <label for="year">শিক্ষাবর্ষ নির্বাচন করুন</label>
+                        <select id="year" required></select>
+                    </div>
+                    <div class="control-group">
+                        <label for="section">সেকশন নির্বাচন করুন</label>
+                        <select id="section" required>
+                            <option value="C">Section C</option>
+                            <option value="D">Section D</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label for="studentNames">ছাত্রছাত্রীদের নাম (কমা দিয়ে আলাদা করুন)</label>
+                        <textarea id="studentNames" rows="10" placeholder="যেমন: Amit Roy, Bimal Das, ..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn">আপলোড করুন</button>
+                </form>
+                <div id="uploadStatus" class="upload-status"></div>
+            </div>
+        </div>
+
+        <!-- Tab 3: View Students -->
+        <div id="ViewStudents" class="tab-content">
+            <div class="content-wrapper">
+                <h2>ছাত্রছাত্রীর তালিকা দেখুন</h2>
+                <div class="controls-container" style="padding: 0; box-shadow: none;">
+                    <div class="control-group">
+                        <label for="viewYear">শিক্ষাবর্ষ নির্বাচন করুন</label>
+                        <select id="viewYear"></select>
+                    </div>
+                    <button id="viewStudentsBtn" class="btn">তালিকা দেখুন</button>
+                </div>
+                <div id="student-details-display" class="student-details-display"></div>
+            </div>
+        </div>
+
+        <!-- Tab 4: View All Marks -->
+        <div id="ViewAllMarks" class="tab-content">
+            <div class="content-wrapper">
+                <h2>সমন্বিত মার্কশিট দেখুন</h2>
+                <div class="controls-container" style="padding: 0; box-shadow: none;">
+                    <div class="control-group">
+                        <label for="marksViewYear">শিক্ষাবর্ষ নির্বাচন করুন</label>
+                        <select id="marksViewYear"></select>
+                    </div>
+                    <div class="control-group">
+                        <label for="marksViewSection">সেকশন নির্বাচন করুন</label>
+                        <select id="marksViewSection"><option value="C">Section C</option><option value="D">Section D</option></select>
+                    </div>
+                    <button id="viewAllMarksBtn" class="btn">মার্কশিট দেখুন</button>
+                </div>
+                <div id="consolidated-marks-display" class="consolidated-marks-display"></div>
+            </div>
+        </div>
+
+        <!-- Tab 5: Unlock Requests -->
+        <div id="UnlockRequests" class="tab-content">
+            <div class="content-wrapper">
+                <h2>মার্কশিট আনলক করার অনুরোধ</h2>
+                <table class="marks-table">
+                    <thead>
+                        <tr>
+                            <th>শিক্ষকের নাম</th>
+                            <th>বিষয়</th>
+                            <th>শিক্ষাবর্ষ</th>
+                            <th>সেকশন</th>
+                            <th>ইভ্যালুয়েশন</th>
+                            <th>কার্যকলাপ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="unlock-requests-body">
+                        <!-- Unlock requests will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script src="auth.js"></script>
+    <script src="admin_dashboard.js"></script>
+</body>
+</html>

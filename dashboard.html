@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ড্যাশবোর্ড - মার্কস এন্ট্রি</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <h3>মার্কস ম্যানেজমেন্ট সিস্টেম</h3>
+        </div>
+        <div class="user-menu">
+            <span id="userFullName"></span>
+            <div class="dropdown">
+                <button class="dropbtn">👤</button>
+                <div class="dropdown-content">
+                    <div class="user-info">
+                        <p><strong>নাম:</strong> <span id="menuUserFullName"></span></p>
+                        <p><strong>বিষয়:</strong> <span id="menuUserSubject"></span></p>
+                        <p><strong>আইডি:</strong> <span id="menuUserId"></span></p>
+                    </div>
+                    <a href="#" onclick="logout()">লগআউট</a>
+                </div>
+            </div>
+            <!-- Notification Bell -->
+            <div class="dropdown">
+                <button id="notificationBtn" class="dropbtn notification-btn">
+                    🔔
+                    <span id="notification-badge" class="badge" style="display: none;"></span>
+                </button>
+                <div id="notification-dropdown" class="dropdown-content">
+                    <!-- Notifications will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div id="warning-message" class="warning" style="display: none;"></div>
+
+        <div class="controls-container">
+            <div class="control-group">
+                <label for="section">সেকশন নির্বাচন করুন:</label>
+                <select id="section">
+                    <option value="" disabled selected>-- সেকশন --</option>
+                    <option value="C">Section C</option>
+                    <option value="D">Section D</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label for="evolution">ইভ্যালুয়েশন নির্বাচন করুন:</label>
+                <select id="evolution">
+                    <option value="" disabled selected>-- ইভ্যালুয়েশন --</option>
+                    <option value="1">Evolution 1</option>
+                    <option value="2">Evolution 2</option>
+                    <option value="3">Evolution 3</option>
+                </select>
+            </div>
+            <button id="loadStudentsBtn" class="btn">ছাত্রছাত্রীদের তালিকা দেখুন</button>
+        </div>
+
+        <div id="marks-entry-table-container" style="display: none;">
+            <h2 id="table-header"></h2>
+            <form id="marksForm">
+                <table class="marks-table">
+                    <thead>
+                        <tr>
+                            <th>রোল</th>
+                            <th>ছাত্র/ছাত্রীর নাম</th>
+                            <th id="written-header">Written (W)</th>
+                            <th id="practical-header">Practical (P)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="students-list-body">
+                        <!-- ছাত্রছাত্রীদের তালিকা এখানে জাভাস্ক্রিপ্ট দিয়ে যোগ করা হবে -->
+                    </tbody>
+                </table>
+                <div class="action-buttons">
+                    <button type="button" id="saveDraftBtn" class="btn btn-secondary">Save as Draft</button>
+                    <button type="submit" class="btn">Submit Marks</button>
+                    <button type="button" id="unlockBtn" class="btn btn-warning" style="display: none;">Request Unlock</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script src="auth.js"></script>
+    <script src="dashboard.js"></script>
+</body>
+</html>

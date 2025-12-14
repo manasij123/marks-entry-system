@@ -1,0 +1,199 @@
+/* dashboard.html এর জন্য নির্দিষ্ট স্টাইল */
+body {
+    display: block; /* form-container এর centering override করার জন্য */
+    height: auto;
+    background-color: #f9fafb;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.header .logo h3 {
+    margin: 0;
+    color: #333;
+}
+
+.user-menu {
+    display: flex;
+    align-items: center;
+}
+
+/* ড্রপডাউন মেনু */
+.dropdown {
+    position: relative;
+    display: inline-block;
+    margin-left: 1rem;
+}
+
+.dropbtn {
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #f9f9f9;
+    min-width: 220px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    border-radius: 8px;
+}
+
+.dropdown-content .user-info {
+    padding: 12px 16px;
+    border-bottom: 1px solid #ddd;
+}
+.user-info p {
+    margin: 5px 0;
+    font-size: 0.9rem;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+
+.dropdown-content a:hover {background-color: #f1f1f1;}
+.dropdown:hover .dropdown-content {display: block;}
+.dropdown:hover .dropbtn {background-color: #0056b3;}
+
+
+.container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+}
+
+.controls-container {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.control-group label {
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #333;
+}
+
+.control-group select {
+    padding: 8px 12px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    min-width: 200px;
+}
+
+#table-header {
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.marks-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.marks-table th, .marks-table td {
+    padding: 12px 15px;
+    border: 1px solid #e0e0e0;
+    text-align: left;
+}
+
+.marks-table thead {
+    background-color: #f1f5f9;
+}
+
+.marks-table th {
+    font-weight: 600;
+}
+
+.marks-table input[type="number"] {
+    width: 80px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.action-buttons {
+    margin-top: 2rem;
+    text-align: right;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+}
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+.btn-warning {
+    background-color: #ffc107;
+}
+
+.warning {
+    background-color: #fffbe6;
+    color: #9f580a;
+    padding: 1rem;
+    border: 1px solid #ffe58f;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+/* Notification Styles */
+.notification-btn {
+    background-color: #6c757d;
+    position: relative;
+}
+
+.badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    padding: 2px 6px;
+    border-radius: 50%;
+    background: #dc3545;
+    color: white;
+    font-size: 12px;
+}
+
+#notification-dropdown .notification-item {
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+#notification-dropdown .notification-item:last-child {
+    border-bottom: none;
+}
