@@ -99,7 +99,7 @@ app.post('/api/login', async (req, res) => {
     const currentYear = new Date().getFullYear();
     if (uniqueId === 'cl_admin' && password === `Admin@${currentYear}`) {
         console.log('Admin logged in.'); // Log can remain in English
-        return res.json({ success: true, isAdmin: true, user: { uniqueId: 'cl_admin', fullName: 'শ্রেণী শিক্ষিকা (অ্যাডমিন)' } });
+        return res.json({ success: true, isAdmin: true, user: { uniqueId: 'cl_admin', fullName: 'শ্রেণী শিক্ষিকা (অ্যাডমিন)', isAdmin: true } });
     }
 
     try {
