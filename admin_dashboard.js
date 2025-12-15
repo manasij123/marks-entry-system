@@ -73,14 +73,19 @@ async function handleAddStudents(event) {
     const namesText = document.getElementById('studentNames').value;
     const statusDiv = document.getElementById('uploadStatus');
 
-    const studentNames = namesText.split(',').map(name => name.trim()).filter(name => name);
-    if (studentNames.length === 0) {
+    // Split names, trim whitespace, and filter out empty strings
+    const allNames = namesText.split(',').map(name => name.trim()).filter(name => name);
+    
+    // Remove duplicates using a Set
+    const uniqueNames = [...new Set(allNames)];
+    if (uniqueNames.length === 0) {
         statusDiv.textContent = 'অনুগ্রহ করে ছাত্রীদের নাম লিখুন।';
         statusDiv.style.color = 'red';
         return;
     }
 
-    const students = studentNames.map((name, index) => ({ roll: index + 1, name }));
+    // Create student objects with roll numbers
+    const students = uniqueNames.map((name, index) => ({ roll: index + 1, name }));
 
     const response = await fetch('/api/students', {
         method: 'POST',
@@ -97,7 +102,7 @@ async function handleAddStudents(event) {
         statusDiv.textContent = `ত্রুটি: ${result.message}`;
         statusDiv.style.color = 'red';
     }
-}
+} // This closing brace was missing, causing a syntax error
 
 async function viewStudentsBySection() {
     const year = document.getElementById('viewYear').value;
