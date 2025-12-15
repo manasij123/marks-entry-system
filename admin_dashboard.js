@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Check if user is admin, otherwise redirect
-    const user = JSON.parse(sessionStorage.getItem('user'));
+    const user = JSON.parse(sessionStorage.getItem('loggedInUser'));
     if (!user || !user.isAdmin) {
         alert('এই পেজটি দেখার জন্য আপনার অনুমতি নেই।');
         window.location.href = 'login.html';
@@ -266,3 +266,40 @@ async function deleteRequest(id) {
 
 // Other functions like deleteTeacher, resetPassword would go here
 // For brevity, they are omitted but would make API calls similar to the above.
+/**
+ * Deletes a teacher after confirmation.
+ * @param {string} teacherId - The ID of the teacher to delete.
+ */
+async function deleteTeacher(teacherId) {
+    if (confirm('আপনি কি নিশ্চিতভাবে এই শিক্ষিকাকে তালিকা থেকে মুছে ফেলতে চান?')) {
+        try {
+            const response = await fetch(`/api/teachers/${teacherId}`, { method: 'DELETE' });
+            const result = await response.json();
+            alert(result.message);
+            if (response.ok) {
+                loadTeachers(); // Refresh the teachers list
+            }
+        } catch (error) {
+            alert('শিক্ষিকাকে মোছার সময় একটি ত্রুটি হয়েছে।');
+        }
+    }
+}
+
+/**
+ * Resets a teacher's password after getting a new one from a prompt.
+ * @param {string} teacherId - The ID of the teacher whose password will be reset.
+ */
+async function resetPassword(teacherId) {
+    const newPassword = prompt('অনুগ্রহ করে নতুন পাসওয়ার্ড দিন:');
+    if (newPassword && newPassword.trim() !== '') {
+        await fetch(`/api/teachers/${teacherId}/reset-password`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password: newPassword.trim() })
+        });
+        alert('পাসওয়ার্ড সফলভাবে রিসেট করা হয়েছে।');
+        loadTeachers(); // Refresh the list to show the new password
+    } else if (newPassword !== null) {
+        alert('পাসওয়ার্ড খালি রাখা যাবে না।');
+    }
+}
