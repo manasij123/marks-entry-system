@@ -1,14 +1,19 @@
 /* Add margin to the main container to avoid overlap with the fixed header */
 .container {
-    margin-top: 80px;
+    padding-top: 80px; /* Use padding instead of margin to contain child elements */
 }
 
 /* Admin specific styles */
 .tab-nav {
+    position: sticky; /* Make the tab bar sticky */
+    top: 65px; /* Position it just below the fixed header (header height is approx 65-70px) */
+    background-color: #ffffff; /* Give it a background to avoid content showing through */
+    z-index: 999; /* Ensure it stays above other content */
     display: flex;
     flex-wrap: wrap;
     border-bottom: 2px solid #ccc;
     margin-bottom: 1.5rem;
+    padding-top: 5px; /* Add some space above the tabs */
 }
 
 .tab-link {
@@ -19,7 +24,6 @@
     font-size: 1rem;
     font-family: 'Hind Siliguri', sans-serif;
     border-bottom: 3px solid transparent;
-    margin-bottom: -2px;
 }
 
 .tab-link.active {
@@ -69,6 +73,9 @@
     }
     /* Adjust margin for smaller screens */
     .container {
-        margin-top: 70px;
+        padding-top: 70px;
+    }
+    .tab-nav {
+        top: 55px; /* Adjust sticky position for smaller header */
     }
 }
