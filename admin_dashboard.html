@@ -64,20 +64,22 @@
                 <h2>নতুন ছাত্রী যোগ করুন</h2>
                 <hr>
                 <form id="studentAddForm" class="student-form">
-                    <div class="control-group">
-                        <label for="year">শিক্ষাবর্ষ নির্বাচন করুন</label>
-                        <select id="year" required></select>
-                    </div>
-                    <div class="control-group">
-                        <label for="section">সেকশন নির্বাচন করুন</label>
-                        <select id="section" required>
-                            <option value="C">Section C</option>
-                            <option value="D">Section D</option>
-                        </select>
+                    <div class="form-row">
+                        <div class="control-group">
+                            <label for="year">শিক্ষাবর্ষ নির্বাচন করুন</label>
+                            <select id="year" required></select>
+                        </div>
+                        <div class="control-group">
+                            <label for="section">সেকশন নির্বাচন করুন</label>
+                            <select id="section" required>
+                                <option value="C">Section C</option>
+                                <option value="D">Section D</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="control-group">
                         <label for="studentNames">ছাত্রীদের নাম (কমা দিয়ে আলাদা করুন)</label>
-                        <textarea id="studentNames" rows="10" placeholder="যেমন: রিতা দাস, মিতা পাল, ..." required></textarea>
+                        <textarea id="studentNames" rows="8" placeholder="যেমন: রিতা দাস, মিতা পাল, ..." required></textarea>
                     </div>
                     <button type="submit" class="btn">আপলোড করুন</button>
                 </form>
