@@ -57,7 +57,7 @@ async function loadTeachers() {
             <td>${teacher.fullName}</td>
             <td>${teacher.subject}</td>
             <td>${teacher.uniqueId || teacher._id}</td>
-            <td>${teacher.password}</td>
+            <td>${teacher.password}</td> <!-- This will now show the plain password -->
             <td>
                 <button class="btn-action btn-primary" onclick="resetPassword('${teacher._id}')">Reset</button>
                 <button class="btn-action btn-danger" onclick="deleteTeacher('${teacher._id}')">Delete</button>

@@ -1,8 +1,7 @@
-require('dotenv').config(); // Load environment variables from .env file
+ mrequire('dotenv').config(); // Load environment variables from .env file
 const express = require('express');
 const cors = require('cors');
 const { MongoClient, ObjectId } = require('mongodb');
-const bcrypt = require('bcrypt');
 const path = require('path');
 
 const app = express();
@@ -59,9 +58,6 @@ app.post('/api/register', async (req, res) => {
         return res.status(400).json({ message: 'অনুগ্রহ করে সমস্ত ঘর পূরণ করুন।' });
     }
 
-    // Hash the password before storing
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
     try {
         // --- Unique ID generation logic with MongoDB counter ---
         const counters = db.collection('counters');
@@ -86,7 +82,7 @@ app.post('/api/register', async (req, res) => {
             return res.status(409).json({ message: 'এই ব্যবহারকারী ইতিমধ্যে বিদ্যমান।' });
         }
 
-        await teachers.insertOne({ _id: uniqueId, fullName, subject, password: hashedPassword });
+        await teachers.insertOne({ _id: uniqueId, fullName, subject, password: password });
 
         console.log(`New teacher registered: ${fullName} (${uniqueId})`);
         res.status(201).json({ message: 'রেজিস্ট্রেশন সফল হয়েছে!', uniqueId });
@@ -110,8 +106,8 @@ app.post('/api/login', async (req, res) => {
         const teachers = db.collection('teachers');
         const teacher = await teachers.findOne({ _id: uniqueId });
 
-        // Compare the provided password with the stored hash
-        if (teacher && await bcrypt.compare(password, teacher.password)) {
+        // Compare the provided password with the stored plain text password
+        if (teacher && teacher.password === password) {
             console.log(`Teacher logged in: ${teacher.fullName}`);
             return res.json({ success: true, isAdmin: false, user: { uniqueId: teacher._id, fullName: teacher.fullName, subject: teacher.subject } });
         }
@@ -296,10 +292,7 @@ app.put('/api/teachers/:id/reset-password', async (req, res) => {
     const { password } = req.body;
     if (!password) return res.status(400).json({ message: 'পাসওয়ার্ড খালি রাখা যাবে না।' });
 
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-    const result = await db.collection('teachers').updateOne({ _id: id }, { $set: { password: hashedPassword } });
+    const result = await db.collection('teachers').updateOne({ _id: id }, { $set: { password: password } });
     if (result.modifiedCount > 0) {
         res.json({ message: 'অনুরোধ অনুমোদিত হয়েছে।' });
     } else {
