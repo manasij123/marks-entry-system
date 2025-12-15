@@ -1,3 +1,8 @@
+/* Add margin to the main container to avoid overlap with the fixed header */
+.container {
+    margin-top: 80px;
+}
+
 /* Admin specific styles */
 .tab-nav {
     display: flex;
@@ -61,5 +66,9 @@
 @media (max-width: 768px) {
     .content-wrapper {
         padding: 1rem;
+    }
+    /* Adjust margin for smaller screens */
+    .container {
+        margin-top: 70px;
     }
 }
