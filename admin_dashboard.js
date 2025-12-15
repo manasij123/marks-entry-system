@@ -59,8 +59,8 @@ async function loadTeachers() {
             <td>${teacher.uniqueId || teacher._id}</td>
             <td>${teacher.password}</td>
             <td>
-                <button onclick="resetPassword('${teacher._id}')">Reset Password</button>
-                <button onclick="deleteTeacher('${teacher._id}')">Delete</button>
+                <button class="btn-action btn-primary" onclick="resetPassword('${teacher._id}')">Reset</button>
+                <button class="btn-action btn-danger" onclick="deleteTeacher('${teacher._id}')">Delete</button>
             </td>
         `;
     }
@@ -252,8 +252,8 @@ async function loadUnlockRequests() {
             <td>${req.section}</td>
             <td>${req.evolution}</td>
             <td>
-                <button onclick="approveRequest('${req.id}')">Approve</button>
-                <button onclick="deleteRequest('${req.id}')">Deny</button>
+                <button class="btn-action btn-success" onclick="approveRequest('${req.id}')">Approve</button>
+                <button class="btn-action btn-danger" onclick="deleteRequest('${req.id}')">Deny</button>
             </td>
         `;
     });
