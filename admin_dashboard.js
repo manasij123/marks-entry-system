@@ -102,7 +102,7 @@ async function handleAddStudents(event) {
         statusDiv.textContent = `ত্রুটি: ${result.message}`;
         statusDiv.style.color = 'red';
     }
-} // This closing brace was missing, causing a syntax error
+}
 
 async function viewStudentsBySection() {
     const year = document.getElementById('viewYear').value;
