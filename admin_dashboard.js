@@ -1,15 +1,24 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Check if user is admin, otherwise redirect
     const user = JSON.parse(sessionStorage.getItem('loggedInUser'));
-    if (!user || !user.isAdmin) {
+    if (!user || !user.isAdmin || !user.sessionToken) {
         alert('এই পেজটি দেখার জন্য আপনার অনুমতি নেই।');
         window.location.href = 'login.html';
         return;
     }
 
+    // Add a beacon to notify the server on page close (logout)
+    window.addEventListener('unload', () => {
+        if (sessionStorage.getItem('loggedInUser')) { // Only send if user is still "logged in" on client
+            navigator.sendBeacon('/api/admin/logout', JSON.stringify({ uniqueId: user.uniqueId }));
+        }
+    });
+
     // Populate year dropdowns
     const currentYear = new Date().getFullYear();
     const yearSelects = [document.getElementById('year'), document.getElementById('viewYear'), document.getElementById('marksViewYear')];
+
+
     yearSelects.forEach(select => {
         if (select) {
             for (let i = currentYear; i >= currentYear - 5; i--) {

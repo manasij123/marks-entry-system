@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const { MongoClient, ObjectId } = require('mongodb');
 const path = require('path');
+const crypto = require('crypto'); // For generating tokens
 
 const app = express();
 const PORT = 3000;
@@ -10,6 +11,7 @@ const PORT = 3000;
 // --- MongoDB Connection ---
 const client = new MongoClient(process.env.DB_URI);
 let db;
+let adminSessionToken = null; // In-memory token for single admin session
 
 async function connectToDb() {
     try {
@@ -97,9 +99,18 @@ app.post('/api/register', async (req, res) => {
 app.post('/api/login', async (req, res) => {
     const { uniqueId, password } = req.body;
     const currentYear = new Date().getFullYear();
+
     if (uniqueId === 'cl_admin' && password === `Admin@${currentYear}`) {
+        // Single session check for admin
+        if (adminSessionToken) {
+            return res.status(409).json({ success: false, message: 'অ্যাডমিন অন্য একটি ডিভাইসে লগইন অবস্থায় আছেন।' });
+        }
+
+        // Generate and store session token
+        adminSessionToken = crypto.randomBytes(32).toString('hex');
         console.log('Admin logged in.'); // Log can remain in English
-        return res.json({ success: true, isAdmin: true, user: { uniqueId: 'cl_admin', fullName: 'শ্রেণী শিক্ষিকা (অ্যাডমিন)', isAdmin: true } });
+        // Send token to client
+        return res.json({ success: true, isAdmin: true, user: { uniqueId: 'cl_admin', fullName: 'শ্রেণী শিক্ষিকা (অ্যাডমিন)', isAdmin: true, sessionToken: adminSessionToken } });
     }
 
     try {
@@ -115,6 +126,17 @@ app.post('/api/login', async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: 'সার্ভারে ত্রুটি দেখা দিয়েছে।' });
     }
+});
+
+/**
+ * API Endpoint: Admin Logout (clears session token)
+ */
+app.post('/api/admin/logout', (req, res) => {
+    // This is a simple in-memory logout.
+    // In a real app, you might want to verify the token being cleared.
+    adminSessionToken = null;
+    console.log('Admin session token cleared.');
+    res.status(200).json({ success: true });
 });
 
 /**

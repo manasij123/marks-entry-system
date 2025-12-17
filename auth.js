@@ -110,6 +110,13 @@ function showUniqueIdPopup(uniqueId) {
  */
 function logout() {
     if (confirm('আপনি কি সত্যিই লগআউট করতে চান?')) {
+        const user = JSON.parse(sessionStorage.getItem('loggedInUser'));
+
+        // If the user is an admin, notify the server to clear the session
+        if (user && user.isAdmin) {
+            fetch('/api/admin/logout', { method: 'POST', keepalive: true });
+        }
+
         sessionStorage.removeItem('loggedInUser');
         alert('আপনি সফলভাবে লগআউট করেছেন।');
         window.location.href = 'login.html';
