@@ -144,6 +144,15 @@
     padding: 1.5rem;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    
+    /* Make this container a flex column to manage scrolling */
+    display: flex;
+    flex-direction: column;
+    
+    /* Let this container grow but not shrink, and set a max-height for scrolling */
+    flex: 1 1 auto;
+    overflow-y: hidden; /* Hide overflow on the container itself */
+    max-height: calc(100vh - 250px); /* Adjust this value based on header/controls height */
 }
 
 #table-header {
@@ -152,6 +161,18 @@
     margin-bottom: 1rem;
     text-align: center;
     color: #343a40;
+}
+
+/* Make the form a flex container to control its children */
+#marksForm {
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Take full height of the parent */
+    overflow: hidden; /* Hide overflow */
+}
+
+.marks-table {
+    overflow-y: auto; /* Allow only the table to scroll */
 }
 
 /* Action buttons at the bottom of the table */
