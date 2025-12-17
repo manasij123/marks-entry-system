@@ -89,7 +89,7 @@
 .controls-container {
     position: sticky; /* Make the controls sticky */
     top: 70px; /* Stick below the header */
-    z-index: 999; /* Ensure it's definitely above the scrolling content */
+    z-index: 990; /* Keep it above content */
     display: flex;
     gap: 1rem;
     align-items: flex-end;
@@ -144,15 +144,6 @@
     padding: 1.5rem;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    
-    /* Make this container a flex column to manage scrolling */
-    display: flex;
-    flex-direction: column;
-    
-    /* Let this container grow but not shrink, and set a max-height for scrolling */
-    flex: 1 1 auto;
-    overflow-y: hidden; /* Hide overflow on the container itself */
-    max-height: calc(100vh - 280px); /* Fine-tuned value for header/controls/buttons height */
 }
 
 #table-header {
@@ -163,46 +154,13 @@
     color: #343a40;
 }
 
-/* Make the form a flex container to control its children */
-#marksForm {
-    display: flex;
-    flex-direction: column;
-    height: 100%; /* Take full height of the parent */
-    overflow: hidden; /* Hide overflow */
-}
-
-/* Wrapper for the table to handle scrolling correctly */
-.table-wrapper {
-    flex-grow: 1; /* Allow wrapper to fill available space */
-    overflow-y: auto; /* Enable vertical scrolling */
-    position: relative;
-}
-
-/* Table layout adjustments for proper alignment with scrollbar */
-.marks-table {
-    width: 100%;
-    border-collapse: separate; /* Use separate for sticky header */
-    border-spacing: 0;
-}
-
-.marks-table th {
-    position: sticky;
-    top: 0;
-    background-color: #f2f2f2; /* Give header a background */
-    z-index: 10;
-}
-
 /* Action buttons at the bottom of the table */
 .action-buttons {
-    background-color: #fff;
-    padding: 1rem 1.5rem;
-    border-radius: 8px;
-    box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
     display: flex;
     justify-content: flex-end;
     gap: 1rem;
-    margin-top: 0; /* Remove margin as it's now a separate block */
-    flex-shrink: 0; /* Prevent buttons from shrinking */
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
     border-top: 1px solid #e9ecef;
 }
 
