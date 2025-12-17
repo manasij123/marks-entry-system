@@ -80,6 +80,10 @@
     background-color: transparent;
     box-shadow: none;
     box-sizing: border-box;
+    /* Add gap to create space between direct children */
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
 }
 
 .controls-container {
@@ -93,7 +97,6 @@
     padding: 1.5rem;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    margin-bottom: 2rem;
 }
 
 .control-group {
@@ -141,7 +144,6 @@
     padding: 1.5rem;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    margin-top: 2rem;
 }
 
 #table-header {
