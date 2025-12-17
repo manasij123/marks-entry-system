@@ -4,14 +4,19 @@ const cors = require('cors');
 const { MongoClient, ObjectId } = require('mongodb');
 const path = require('path');
 const crypto = require('crypto'); // For generating tokens
+const http = require('http');
+const { WebSocketServer } = require('ws');
 
 const app = express();
+const server = http.createServer(app); // Create HTTP server from Express app
 const PORT = 3000;
 
 // --- MongoDB Connection ---
 const client = new MongoClient(process.env.DB_URI);
 let db;
 let adminSessionToken = null; // In-memory token for single admin session
+let adminWs = null; // To hold the active admin WebSocket connection
+
 
 async function connectToDb() {
     try {
@@ -27,6 +32,7 @@ async function connectToDb() {
 
 // Middleware
 app.use(cors());
+app.set('trust proxy', true); // Necessary to get correct IP address if behind a proxy
 app.use(express.json());
 
 // --- Serve Static Files ---
@@ -103,6 +109,17 @@ app.post('/api/login', async (req, res) => {
     if (uniqueId === 'cl_admin' && password === `Admin@${currentYear}`) {
         // Single session check for admin
         if (adminSessionToken) {
+            // If an admin is already logged in, notify them via WebSocket
+            if (adminWs) {
+                try {
+                    adminWs.send(JSON.stringify({
+                        type: 'LOGIN_ATTEMPT',
+                        ip: req.ip // Get IP address from the request
+                    }));
+                } catch (e) {
+                    console.error("Failed to send login attempt notification via WebSocket.", e);
+                }
+            }
             return res.status(409).json({ success: false, message: 'অ্যাডমিন অন্য একটি ডিভাইসে লগইন অবস্থায় আছেন।' });
         }
 
@@ -330,8 +347,28 @@ app.put('/api/teachers/:id/reset-password', async (req, res) => {
 });
 
 // Start the server
-connectToDb().then(() => {
-    app.listen(PORT, () => {
-        console.log(`সার্ভার http://localhost:${PORT} -এ চলছে`);
-    });
+connectToDb();
+
+// --- WebSocket Server Setup ---
+const wss = new WebSocketServer({ server });
+
+wss.on('connection', (ws, req) => {
+    // Check if the connection is from a logged-in admin
+    // A simple way is to check a query parameter on connection
+    const url = new URL(req.url, `http://${req.headers.host}`);
+    const token = url.searchParams.get('token');
+
+    if (token && token === adminSessionToken) {
+        console.log('Admin connected via WebSocket.');
+        adminWs = ws;
+
+        ws.on('close', () => {
+            console.log('Admin WebSocket connection closed.');
+            adminWs = null; // Clear the connection when closed
+        });
+    }
+});
+
+server.listen(PORT, () => {
+    console.log(`সার্ভার http://localhost:${PORT} -এ চলছে`);
 });

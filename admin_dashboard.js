@@ -14,6 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Establish WebSocket connection for real-time notifications
+    setupWebSocket(user.sessionToken);
     // Populate year dropdowns
     const currentYear = new Date().getFullYear();
     const yearSelects = [document.getElementById('year'), document.getElementById('viewYear'), document.getElementById('marksViewYear')];
@@ -37,6 +39,42 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('viewAllMarksBtn').addEventListener('click', viewConsolidatedMarks);
     document.getElementById('printMarksheetBtn').addEventListener('click', handlePrint);
 });
+
+function setupWebSocket(token) {
+    // Use wss:// for secure connections in production
+    const socket = new WebSocket(`ws://${window.location.host}?token=${token}`);
+
+    socket.onopen = () => {
+        console.log('WebSocket connection established for admin.');
+    };
+
+    socket.onmessage = (event) => {
+        const message = JSON.parse(event.data);
+        if (message.type === 'LOGIN_ATTEMPT') {
+            showLoginAttemptPopup(message.ip);
+        }
+    };
+
+    socket.onclose = () => {
+        console.log('WebSocket connection closed. Attempting to reconnect...');
+        // Optional: Add reconnection logic
+    };
+}
+
+function showLoginAttemptPopup(ip) {
+    const modal = document.getElementById('login-attempt-modal');
+    const ipAddressSpan = document.getElementById('attempt-ip-address');
+    const ipInfoDiv = document.getElementById('ip-info');
+    const showIpBtn = document.getElementById('show-ip-btn');
+    const closeBtn = document.querySelector('.modal-close-btn');
+
+    ipAddressSpan.textContent = ip;
+    ipInfoDiv.style.display = 'none'; // Hide IP initially
+    modal.style.display = 'flex';
+
+    showIpBtn.onclick = () => { ipInfoDiv.style.display = 'block'; };
+    closeBtn.onclick = () => { modal.style.display = 'none'; };
+}
 
 function openTab(evt, tabName) {
     let i, tabcontent, tablinks;
