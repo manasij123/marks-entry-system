@@ -73,7 +73,7 @@
 }
 
 .container {
-    margin-top: 80px; /* To offset the fixed header */
+    margin-top: 70px; /* Adjusted to match header height */
     width: 100%;
     max-width: 1200px;
     padding: 2rem;
@@ -83,6 +83,9 @@
 }
 
 .controls-container {
+    position: sticky; /* Make the controls sticky */
+    top: 70px; /* Stick below the header */
+    z-index: 990; /* Keep it above content */
     display: flex;
     gap: 1rem;
     align-items: flex-end;

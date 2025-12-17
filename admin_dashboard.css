@@ -1,6 +1,6 @@
 /* Add margin to the main container to avoid overlap with the fixed header */
 .container {
-    padding-top: 80px; /* Use padding instead of margin to contain child elements */
+    padding-top: 70px; /* Adjusted to match header height */
     background-color: #f4f7f9; /* Lighter background for the main content area */
 }
 
@@ -9,7 +9,7 @@
     position: sticky; /* Make the tab bar sticky */
     top: 65px; /* Position it just below the fixed header (header height is approx 65-70px) */
     background-color: #ffffff; /* Give it a background to avoid content showing through */
-    z-index: 50; /* Lower z-index to ensure it goes under the main header dropdown */
+    z-index: 999; /* Ensure it stays above content but below the main header */
     display: flex;
     flex-wrap: wrap;
     border-bottom: 2px solid #ccc;
