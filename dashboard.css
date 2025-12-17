@@ -132,6 +132,60 @@
     border-color: #007bff;
 }
 
+/* Container for the marks entry table */
+#marks-entry-table-container {
+    background-color: #fff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    margin-top: 2rem;
+}
+
+#table-header {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    text-align: center;
+    color: #343a40;
+}
+
+/* Action buttons at the bottom of the table */
+.action-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e9ecef;
+}
+
+.action-buttons .btn, .action-buttons button {
+    width: auto;
+    padding: 10px 25px;
+}
+
+.action-buttons .btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+.action-buttons .btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+.action-buttons .btn-warning {
+    background-color: #ffc107;
+    border-color: #ffc107;
+    color: #212529;
+}
+.action-buttons .btn-warning:hover {
+    background-color: #e0a800;
+}
+
+.warning {
+    padding: 1rem;
+    border-radius: 5px;
+}
+
 /* --- Responsive Design for Dashboard --- */
 @media (max-width: 768px) {
     .header {
@@ -148,5 +202,9 @@
     }
     .control-group {
         justify-content: space-between;
+    }
+    .action-buttons {
+        flex-direction: column;
+        align-items: stretch;
     }
 }
