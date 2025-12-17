@@ -159,12 +159,7 @@ app.get('/api/students/:year/:section', async (req, res) => {
 app.get('/api/teachers', async (req, res) => {
     try {
         const teachersArray = await db.collection('teachers').find({}).toArray();
-        // Convert array to object format for frontend compatibility
-        const teachersObject = teachersArray.reduce((obj, item) => {
-            obj[item._id] = item;
-            return obj;
-        }, {});
-        res.json(teachersObject);
+        res.json(teachersArray); // Send as an array
     } catch (error) {
         res.status(500).json({ message: 'সার্ভারে ত্রুটি দেখা দিয়েছে।' });
     }

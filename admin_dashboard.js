@@ -49,8 +49,7 @@ async function loadTeachers() {
     const teachersListBody = document.getElementById('teachers-list-body');
     teachersListBody.innerHTML = '';
     let count = 1;
-    for (const id in teachers) {
-        const teacher = teachers[id];
+    teachers.forEach(teacher => {
         const row = teachersListBody.insertRow();
         row.innerHTML = `
             <td>${count++}</td>
@@ -63,7 +62,7 @@ async function loadTeachers() {
                 <button class="btn-action btn-danger" onclick="deleteTeacher('${teacher._id}')">Delete</button>
             </td>
         `;
-    }
+    });
 }
 
 async function handleAddStudents(event) {
