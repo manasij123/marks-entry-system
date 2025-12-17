@@ -3,10 +3,7 @@
 body {
     font-family: 'Hind Siliguri', sans-serif;
     background-color: #f0f2f5;
-    display: flex; /* This helps center the login form */
-    flex-direction: column; /* Arrange children vertically */
     min-height: 100vh; /* Ensure body takes at least full viewport height */
-    justify-content: flex-start; /* Align content to the top, not center */
     margin: 0;
 }
 
@@ -18,6 +15,7 @@ body {
     width: 100%;
     max-width: 400px;
     text-align: center;
+    margin: 5rem auto; /* Center the form vertically and horizontally on login/register pages */
 }
 
 h2 {
