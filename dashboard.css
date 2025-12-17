@@ -89,7 +89,7 @@
 .controls-container {
     position: sticky; /* Make the controls sticky */
     top: 70px; /* Stick below the header */
-    z-index: 990; /* Keep it above content */
+    z-index: 999; /* Ensure it's definitely above the scrolling content */
     display: flex;
     gap: 1rem;
     align-items: flex-end;
@@ -152,7 +152,7 @@
     /* Let this container grow but not shrink, and set a max-height for scrolling */
     flex: 1 1 auto;
     overflow-y: hidden; /* Hide overflow on the container itself */
-    max-height: calc(100vh - 320px); /* Adjust this value based on header/controls/buttons height */
+    max-height: calc(100vh - 280px); /* Fine-tuned value for header/controls/buttons height */
 }
 
 #table-header {
