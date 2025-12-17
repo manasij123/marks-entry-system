@@ -41,8 +41,9 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function setupWebSocket(token) {
-    // Use wss:// for secure connections in production
-    const socket = new WebSocket(`ws://${window.location.host}?token=${token}`);
+    // Use wss:// for secure (https) connections, ws:// for local (http)
+    const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+    const socket = new WebSocket(`${protocol}://${window.location.host}?token=${token}`);
 
     socket.onopen = () => {
         console.log('WebSocket connection established for admin.');

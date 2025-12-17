@@ -9,7 +9,7 @@ const { WebSocketServer } = require('ws');
 
 const app = express();
 const server = http.createServer(app); // Create HTTP server from Express app
-const PORT = 3000;
+const PORT = process.env.PORT || 3000; // Use Render's port or 3000 for local
 
 // --- MongoDB Connection ---
 const client = new MongoClient(process.env.DB_URI);
@@ -346,9 +346,6 @@ app.put('/api/teachers/:id/reset-password', async (req, res) => {
     }
 });
 
-// Start the server
-connectToDb();
-
 // --- WebSocket Server Setup ---
 const wss = new WebSocketServer({ server });
 
@@ -369,6 +366,9 @@ wss.on('connection', (ws, req) => {
     }
 });
 
-server.listen(PORT, () => {
-    console.log(`সার্ভার http://localhost:${PORT} -এ চলছে`);
+// Start the server after connecting to DB
+connectToDb().then(() => {
+    server.listen(PORT, () => {
+        console.log(`সার্ভার http://localhost:${PORT} -এ চলছে`);
+    });
 });
