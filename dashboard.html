@@ -65,19 +65,21 @@
         <div id="marks-entry-table-container" style="display: none;">
             <h2 id="table-header"></h2>
             <form id="marksForm">
-                <table class="marks-table">
-                    <thead>
-                        <tr>
-                            <th>রোল</th>
-                            <th>ছাত্রীর নাম</th>
-                            <th id="written-header">Written (W)</th>
-                            <th id="practical-header">Practical (P)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="students-list-body">
-                        <!-- ছাত্রীদের তালিকা এখানে জাভাস্ক্রিপ্ট দিয়ে যোগ করা হবে -->
-                    </tbody>
-                </table>
+                <div class="table-wrapper"> <!-- Added wrapper for scrolling -->
+                    <table class="marks-table">
+                        <thead>
+                            <tr>
+                                <th>রোল</th>
+                                <th>ছাত্রীর নাম</th>
+                                <th id="written-header">Written (W)</th>
+                                <th id="practical-header">Practical (P)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="students-list-body">
+                            <!-- ছাত্রীদের তালিকা এখানে জাভাস্ক্রিপ্ট দিয়ে যোগ করা হবে -->
+                        </tbody>
+                    </table>
+                </div>
                 <div class="action-buttons">
                     <button type="button" id="saveDraftBtn" class="btn btn-secondary">Save as Draft</button>
                     <button type="submit" class="btn">Submit Marks</button>

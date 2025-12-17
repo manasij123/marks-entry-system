@@ -171,8 +171,26 @@
     overflow: hidden; /* Hide overflow */
 }
 
-.marks-table {
-    overflow-y: auto; /* Allow only the table to scroll */
+/* Wrapper for the table to handle scrolling correctly */
+.table-wrapper {
+    flex-grow: 1; /* Allow wrapper to fill available space */
+    overflow-y: auto; /* Enable vertical scrolling */
+    position: relative;
+}
+
+/* Table layout adjustments for proper alignment with scrollbar */
+.marks-table, .marks-table thead, .marks-table tbody, .marks-table tr {
+    display: block;
+}
+
+.marks-table tbody {
+    overflow-y: scroll; /* This is not strictly needed with wrapper, but good for context */
+}
+
+.marks-table tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed; /* Ensures columns are evenly spaced */
 }
 
 /* Action buttons at the bottom of the table */
@@ -182,6 +200,7 @@
     gap: 1rem;
     margin-top: 1.5rem;
     padding-top: 1.5rem;
+    flex-shrink: 0; /* Prevent buttons from shrinking */
     border-top: 1px solid #e9ecef;
 }
 
