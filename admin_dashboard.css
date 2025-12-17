@@ -9,7 +9,7 @@
     position: sticky; /* Make the tab bar sticky */
     top: 65px; /* Position it just below the fixed header (header height is approx 65-70px) */
     background-color: #ffffff; /* Give it a background to avoid content showing through */
-    z-index: 998; /* Ensure it stays above other content but below header */
+    z-index: 50; /* Lower z-index to ensure it goes under the main header dropdown */
     display: flex;
     flex-wrap: wrap;
     border-bottom: 2px solid #ccc;

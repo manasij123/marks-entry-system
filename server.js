@@ -171,6 +171,18 @@ app.get('/api/teachers', async (req, res) => {
 });
 
 /**
+ * API Endpoint: Get all unique subjects
+ */
+app.get('/api/subjects', async (req, res) => {
+    try {
+        const subjects = await db.collection('teachers').distinct('subject');
+        res.json(subjects.sort()); // Sort subjects alphabetically
+    } catch (error) {
+        res.status(500).json({ message: 'সার্ভারে ত্রুটি দেখা দিয়েছে।' });
+    }
+});
+
+/**
  * API Endpoint: Save or Submit Marks
  */
 app.post('/api/marks', async (req, res) => {

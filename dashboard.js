@@ -112,14 +112,14 @@ async function populateMarksEntryTable(students, section, evolution, year) {
 
     // ছাত্রছাত্রীদের জন্য টেবিলের সারি তৈরি করা
     students.forEach(student => {
-        const studentMarks = savedMarksData.data[student.Roll] || {};
+        const studentMarks = savedMarksData.data[student.roll] || {};
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>${student.Roll}</td>
-            <td>${student.Name}</td>
-            <td><input type="number" class="marks-input" data-type="written" data-roll="${student.Roll}" min="0" max="${fullMarks.written}" 
+            <td>${student.roll}</td>
+            <td>${student.name}</td>
+            <td><input type="number" class="marks-input" data-type="written" data-roll="${student.roll}" min="0" max="${fullMarks.written}" 
                 value="${studentMarks.written || ''}" ${isLocked ? 'readonly' : ''}></td>
-            <td><input type="number" class="marks-input" data-type="practical" data-roll="${student.Roll}" min="0" max="${fullMarks.practical}" 
+            <td><input type="number" class="marks-input" data-type="practical" data-roll="${student.roll}" min="0" max="${fullMarks.practical}" 
                 value="${studentMarks.practical || ''}" ${isLocked ? 'readonly' : ''}></td>
         `;
         tableBody.appendChild(row);

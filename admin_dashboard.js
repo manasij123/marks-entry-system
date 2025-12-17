@@ -152,14 +152,16 @@ async function viewConsolidatedMarks() {
         return;
     }
 
-    // Process marks
-    const subjects = ['BENG', 'ENGL', 'MATH', 'PHSC', 'LISC', 'HIST', 'GEGR'];
+    // Fetch subjects dynamically
+    const subjectsRes = await fetch('/api/subjects');
+    const subjects = await subjectsRes.json();
+
     const evolutions = ['1', '2', '3'];
     const marksByStudent = {};
 
     students.forEach(student => {
         marksByStudent[student.roll] = { name: student.name };
-        subjects.forEach(subject => {
+        subjects.forEach(subject => { // Now uses dynamic subjects
             marksByStudent[student.roll][subject] = {};
             evolutions.forEach(evo => {
                 marksByStudent[student.roll][subject][evo] = { W: '-', P: '-' };
