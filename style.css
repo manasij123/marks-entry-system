@@ -3,10 +3,11 @@
 body {
     font-family: 'Hind Siliguri', sans-serif;
     background-color: #f0f2f5;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+    display: flex; /* This helps center the login form */
+    flex-direction: column; /* Arrange children vertically */
+    align-items: center; /* Center children horizontally */
+    min-height: 100vh; /* Ensure body takes at least full viewport height */
+    justify-content: flex-start; /* Align content to the top, not center */
     margin: 0;
 }
 
