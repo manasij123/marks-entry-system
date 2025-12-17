@@ -179,18 +179,17 @@
 }
 
 /* Table layout adjustments for proper alignment with scrollbar */
-.marks-table, .marks-table thead, .marks-table tbody, .marks-table tr {
-    display: block;
-}
-
-.marks-table tbody {
-    overflow-y: scroll; /* This is not strictly needed with wrapper, but good for context */
-}
-
-.marks-table tr {
-    display: table;
+.marks-table {
     width: 100%;
-    table-layout: fixed; /* Ensures columns are evenly spaced */
+    border-collapse: separate; /* Use separate for sticky header */
+    border-spacing: 0;
+}
+
+.marks-table th {
+    position: sticky;
+    top: 0;
+    background-color: #f2f2f2; /* Give header a background */
+    z-index: 10;
 }
 
 /* Action buttons at the bottom of the table */
