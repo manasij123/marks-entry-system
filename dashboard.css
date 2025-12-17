@@ -152,7 +152,7 @@
     /* Let this container grow but not shrink, and set a max-height for scrolling */
     flex: 1 1 auto;
     overflow-y: hidden; /* Hide overflow on the container itself */
-    max-height: calc(100vh - 250px); /* Adjust this value based on header/controls height */
+    max-height: calc(100vh - 320px); /* Adjust this value based on header/controls/buttons height */
 }
 
 #table-header {
@@ -194,11 +194,14 @@
 
 /* Action buttons at the bottom of the table */
 .action-buttons {
+    background-color: #fff;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
     display: flex;
     justify-content: flex-end;
     gap: 1rem;
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
+    margin-top: 0; /* Remove margin as it's now a separate block */
     flex-shrink: 0; /* Prevent buttons from shrinking */
     border-top: 1px solid #e9ecef;
 }

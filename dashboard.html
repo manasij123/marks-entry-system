@@ -80,12 +80,12 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="action-buttons">
-                    <button type="button" id="saveDraftBtn" class="btn btn-secondary">Save as Draft</button>
-                    <button type="submit" class="btn">Submit Marks</button>
-                    <button type="button" id="unlockBtn" class="btn btn-warning" style="display: none;">Request Unlock</button>
-                </div>
             </form>
+        </div>
+        <div class="action-buttons" style="display: none;">
+            <button type="button" id="saveDraftBtn" class="btn btn-secondary">Save as Draft</button>
+            <button type="submit" form="marksForm" class="btn">Submit Marks</button> <!-- Use form attribute to link to form -->
+            <button type="button" id="unlockBtn" class="btn btn-warning" style="display: none;">Request Unlock</button>
         </div>
     </main>
 
