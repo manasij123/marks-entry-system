@@ -145,6 +145,8 @@
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     overflow-x: auto; /* Ensures table scrolls horizontally if too wide */
+    max-height: 60vh; /* Sets a maximum height for the table container */
+    overflow-y: auto; /* Enables vertical scrolling if content exceeds max-height */
 }
 
 #table-header {
