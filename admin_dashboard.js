@@ -37,7 +37,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('studentAddForm').addEventListener('submit', handleAddStudents);
     document.getElementById('viewStudentsBtn').addEventListener('click', viewStudentsBySection);
     document.getElementById('viewAllMarksBtn').addEventListener('click', viewConsolidatedMarks);
-    document.getElementById('printMarksheetBtn').addEventListener('click', handlePrint);
+    document.getElementById('printMarksheetBtn').addEventListener('click', () => handlePrint('consolidated-marks-display'));
+    document.getElementById('printProgressReportBtn').addEventListener('click', handleProgressReportPrint);
 });
 
 function setupWebSocket(token) {
@@ -182,9 +183,11 @@ async function viewConsolidatedMarks() {
     const section = document.getElementById('marksViewSection').value;
     const displayDiv = document.getElementById('consolidated-marks-display');
     const printBtn = document.getElementById('printMarksheetBtn');
+    const progressReportPrintBtn = document.getElementById('printProgressReportBtn');
+
     displayDiv.innerHTML = 'লোড হচ্ছে...';
     printBtn.style.display = 'none';
-
+    progressReportPrintBtn.style.display = 'none';
     // Fetch students and marks
     const [studentsRes, marksRes] = await Promise.all([
         fetch(`/api/students/${year}/${section}`),
@@ -269,11 +272,66 @@ async function viewConsolidatedMarks() {
 
     tableHTML += '</tbody></table>';
     displayDiv.innerHTML = tableHTML;
-    printBtn.style.display = 'inline-block'; // Show the print button
+    printBtn.style.display = 'inline-block';
+    progressReportPrintBtn.style.display = 'inline-block';
 }
 
-function handlePrint() {
+function handlePrint(elementId) {
+    const printContent = document.getElementById(elementId).innerHTML;
+    const originalContent = document.body.innerHTML;
+    document.body.innerHTML = printContent;
     window.print();
+    document.body.innerHTML = originalContent;
+    // Re-attach event listeners as they are lost
+    location.reload();
+}
+
+async function handleProgressReportPrint() {
+    const year = document.getElementById('marksViewYear').value;
+    const section = document.getElementById('marksViewSection').value;
+
+    if (!year || !section) {
+        alert('অনুগ্রহ করে বছর এবং সেকশন নির্বাচন করুন।');
+        return;
+    }
+
+    try {
+        // Fetch student data
+        const studentsRes = await fetch(`/api/students/${year}/${section}`);
+        const students = await studentsRes.json();
+
+        if (students.length === 0) {
+            alert('এই সেকশনে কোনো ছাত্রী পাওয়া যায়নি।');
+            return;
+        }
+
+        // Fetch the report card template
+        const templateRes = await fetch('report_card.html');
+        const templateHtml = await templateRes.text();
+        const parser = new DOMParser();
+        const templateDoc = parser.parseFromString(templateHtml, 'text/html');
+        const cardTemplate = templateDoc.getElementById('report-card-template');
+
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write('<html><head><title>Progress Report Cards</title><link rel="stylesheet" href="report_card.css"></head><body>');
+
+        // For each student, clone the template, fill data, and append to the print window
+        students.sort((a, b) => a.roll - b.roll).forEach(student => {
+            const cardClone = cardTemplate.cloneNode(true);
+            cardClone.querySelector('.report-year').textContent = year;
+            cardClone.querySelector('.student-name').textContent = student.name;
+            cardClone.querySelector('.student-roll').textContent = student.roll;
+            cardClone.querySelector('.student-class').textContent = section; // Assuming section is class
+            printWindow.document.body.appendChild(cardClone);
+        });
+
+        printWindow.document.write('</body></html>');
+        printWindow.document.close(); // Important for some browsers
+        printWindow.onload = () => printWindow.print(); // Print after content is loaded
+    } catch (error) {
+        console.error('Error generating progress reports:', error);
+        alert('রিপোর্ট কার্ড তৈরি করার সময় একটি ত্রুটি হয়েছে।');
+    }
 }
 
 async function loadUnlockRequests() {
