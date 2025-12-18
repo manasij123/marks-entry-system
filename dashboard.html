@@ -63,7 +63,10 @@
         </div>
 
         <div id="marks-entry-table-container" style="display: none;">
-            <h2 id="table-header"></h2>
+            <div class="marks-header-status">
+                <h2 id="table-header"></h2>
+                <div id="marks-status-display" class="status-badge" style="display: none;"></div>
+            </div>
             <form id="marksForm">
                 <div class="table-wrapper"> <!-- Added wrapper for scrolling -->
                     <table class="marks-table">
@@ -83,11 +86,24 @@
             </form>
         </div>
         <div class="action-buttons" style="display: none;">
-            <button type="button" id="saveDraftBtn" class="btn btn-secondary">Save as Draft</button>
-            <button type="submit" form="marksForm" class="btn">Submit Marks</button> <!-- Use form attribute to link to form -->
+            <button type="button" id="saveDraftBtn" class="btn btn-secondary">খসড়া সেভ করুন (Save Draft)</button>
+            <button type="button" id="submitBtn" class="btn">মার্কস জমা দিন (Submit)</button>
             <button type="button" id="unlockBtn" class="btn btn-warning" style="display: none;">Request Unlock</button>
         </div>
     </main>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmation-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <span class="modal-close-btn">&times;</span>
+            <h2 id="modal-title">আপনি কি নিশ্চিত?</h2>
+            <p id="modal-message">আপনি একবার মার্কস জমা দিলে, এটি আর সম্পাদনা করতে পারবেন না। আনলক করার জন্য অ্যাডমিনের কাছে অনুরোধ করতে হবে।</p>
+            <div class="modal-actions">
+                <button id="modal-cancel-btn" class="btn btn-secondary">ফিরে যান</button>
+                <button id="modal-confirm-btn" class="btn">নিশ্চিত করুন</button>
+            </div>
+        </div>
+    </div>
 
     <script src="auth.js"></script>
     <script src="dashboard.js"></script>

@@ -1,247 +1,237 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // ব্যবহারকারী লগইন করা আছে কিনা তা পরীক্ষা করে
-    checkAuth();
-
-    const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
-    if (!loggedInUser || loggedInUser.uniqueId === 'cl_admin') {
-        // অ্যাডমিনকে এই পেজে আসতে বাধা দেওয়া হচ্ছে
+    // Check if user is logged in, otherwise redirect
+    const user = JSON.parse(sessionStorage.getItem('loggedInUser'));
+    if (!user || user.isAdmin) {
+        alert('এই পেজটি দেখার জন্য আপনার অনুমতি নেই।');
         window.location.href = 'login.html';
         return;
     }
 
-    // ব্যবহারকারীর তথ্য হেডার এবং ড্রপডাউনে দেখানো
-    document.getElementById('userFullName').textContent = loggedInUser.fullName;
-    document.getElementById('menuUserFullName').textContent = loggedInUser.fullName;
-    document.getElementById('menuUserSubject').textContent = loggedInUser.subject;
-    document.getElementById('menuUserId').textContent = loggedInUser.uniqueId;
+    // Populate user info in the header
+    document.getElementById('userFullName').textContent = user.fullName;
+    document.getElementById('menuUserFullName').textContent = user.fullName;
+    document.getElementById('menuUserSubject').textContent = user.subject;
+    document.getElementById('menuUserId').textContent = user.uniqueId;
 
-    // Load notifications on page load
-    loadNotifications();
-
-    // "ছাত্রছাত্রীদের তালিকা দেখুন" বাটনে ইভেন্ট লিসেনার যোগ করা
-    document.getElementById('loadStudentsBtn').addEventListener('click', loadStudentListForMarksEntry);
-
-    // বাটনগুলোর জন্য ইভেন্ট লিসেনার
+    // Event Listeners
+    document.getElementById('loadStudentsBtn').addEventListener('click', loadMarksheet);
     document.getElementById('saveDraftBtn').addEventListener('click', () => saveOrSubmitMarks('draft'));
-    document.getElementById('marksForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-        saveOrSubmitMarks('submitted');
-    });
-    document.getElementById('unlockBtn').addEventListener('click', requestUnlock);
+    document.getElementById('submitBtn').addEventListener('click', handleSubmitClick);
+    document.getElementById('unlockBtn').addEventListener('click', handleUnlockRequest);
+
+    // Initial setup
+    checkAuth();
 });
 
 /**
- * নির্বাচিত সেকশন এবং শিক্ষাবর্ষ অনুযায়ী ছাত্রছাত্রীদের তালিকা লোড করে।
+ * Fetches students and their marks for the selected criteria.
  */
-async function loadStudentListForMarksEntry() {
+async function loadMarksheet() {
     const section = document.getElementById('section').value;
     const evolution = document.getElementById('evolution').value;
-    const warningMessage = document.getElementById('warning-message');
-    const tableContainer = document.getElementById('marks-entry-table-container');
+    const user = JSON.parse(sessionStorage.getItem('loggedInUser'));
 
     if (!section || !evolution) {
-        warningMessage.textContent = 'অনুগ্রহ করে সেকশন এবং ইভ্যালুয়েশন উভয়ই নির্বাচন করুন।'; // Please select both section and evaluation.
-        warningMessage.style.display = 'block';
-        tableContainer.style.display = 'none';
+        alert('অনুগ্রহ করে সেকশন এবং ইভ্যালুয়েশন নির্বাচন করুন।');
         return;
     }
 
-    warningMessage.style.display = 'none';
-    const currentYear = new Date().getFullYear();
+    const year = new Date().getFullYear(); // Or get from a dropdown if needed
 
+    // Fetch students and marks data concurrently
     try {
-        const response = await fetch(`/api/students/${currentYear}/${section}`);
-        const students = await response.json();
+        const [studentsRes, marksRes] = await Promise.all([
+            fetch(`/api/students/${year}/${section}`),
+            fetch(`/api/marks/${year}/${section}/${user.subject}/${evolution}`)
+        ]);
 
-        if (!students || students.length === 0) {
-            warningMessage.textContent = `এই শিক্ষাবর্ষে (${currentYear}) সেকশন '${section}'-এর জন্য কোনো ছাত্রছাত্রীর তালিকা পাওয়া যায়নি। অ্যাডমিনকে তালিকা আপলোড করতে বলুন।`;
-            warningMessage.style.display = 'block';
-            tableContainer.style.display = 'none';
+        if (!studentsRes.ok || !marksRes.ok) {
+            throw new Error('তথ্য আনতে সমস্যা হয়েছে।');
+        }
+
+        const students = await studentsRes.json();
+        const marksheet = await marksRes.json();
+
+        if (students.length === 0) {
+            alert('এই সেকশনে কোনো ছাত্রী পাওয়া যায়নি।');
             return;
         }
 
-        populateMarksEntryTable(students, section, evolution, currentYear);
+        displayMarksTable(students, marksheet, { year, section, evolution, subject: user.subject });
 
     } catch (error) {
-        console.error('Error fetching student list:', error);
-        warningMessage.textContent = 'ছাত্রছাত্রীদের তালিকা লোড করতে সমস্যা হয়েছে।';
-        warningMessage.style.display = 'block';
+        console.error('Error loading marksheet:', error);
+        alert(`একটি ত্রুটি ঘটেছে: ${error.message}`);
     }
 }
 
 /**
- * ছাত্রছাত্রীদের তালিকা দিয়ে মার্কস এন্ট্রি টেবিলটি তৈরি করে।
- * @param {Array} students - ছাত্রছাত্রীদের তালিকা।
- * @param {string} section - নির্বাচিত সেকশন।
- * @param {string} evolution - নির্বাচিত ইভ্যালুয়েশন।
+ * Renders the marks entry table and action buttons based on marksheet status.
  */
-async function populateMarksEntryTable(students, section, evolution, year) {
+function displayMarksTable(students, marksheet, sheetInfo) {
+    const tableContainer = document.getElementById('marks-entry-table-container');
     const tableBody = document.getElementById('students-list-body');
     const tableHeader = document.getElementById('table-header');
-    const writtenHeader = document.getElementById('written-header');
-    const practicalHeader = document.getElementById('practical-header');
-    const tableContainer = document.getElementById('marks-entry-table-container');
-    tableBody.innerHTML = '';
+    const actionButtons = document.querySelector('.action-buttons');
 
-    const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
-    let savedMarksData = { status: 'new', data: {} };
-    try {
-        const response = await fetch(`/api/marks/${year}/${section}/${loggedInUser.subject}/${evolution}`);
-        savedMarksData = await response.json();
-    } catch (error) {
-        console.error("Could not fetch existing marks:", error);
-    }
+    tableHeader.textContent = `${sheetInfo.subject} - ইভ্যালুয়েশন ${sheetInfo.evolution} - সেকশন ${sheetInfo.section}`;
+    tableBody.innerHTML = ''; // Clear previous data
 
-    const isLocked = savedMarksData.status === 'submitted';
-
-    // Show/hide buttons based on status
-    document.getElementById('saveDraftBtn').style.display = isLocked ? 'none' : 'inline-block';
-    document.querySelector('button[type="submit"]').style.display = isLocked ? 'none' : 'inline-block';
-    document.getElementById('unlockBtn').style.display = isLocked ? 'inline-block' : 'none';
-
-    // ইভ্যালুয়েশন অনুযায়ী ফুল মার্কস নির্ধারণ
-    const fullMarks = {
-        written: (evolution === '3') ? 90 : 40,
-        practical: 10
-    };
-
-    // টেবিলের হেডার আপডেট করা
-    tableHeader.textContent = `সেকশন: ${section} | ইভ্যালুয়েশন: ${evolution} | বিষয়: ${JSON.parse(sessionStorage.getItem('loggedInUser')).subject}`;
-    writtenHeader.textContent = `Written (F.M. ${fullMarks.written})`;
-    practicalHeader.textContent = `Practical (F.M. ${fullMarks.practical})`;
-
-    // ছাত্রছাত্রীদের জন্য টেবিলের সারি তৈরি করা
-    students.forEach(student => {
-        const studentMarks = savedMarksData.data[student.roll] || {};
-        const row = document.createElement('tr');
+    students.sort((a, b) => a.roll - b.roll).forEach(student => {
+        const marks = marksheet.data ? (marksheet.data[student.roll] || {}) : {};
+        const row = tableBody.insertRow();
         row.innerHTML = `
             <td>${student.roll}</td>
             <td>${student.name}</td>
-            <td><input type="number" class="marks-input" data-type="written" data-roll="${student.roll}" min="0" max="${fullMarks.written}" 
-                value="${studentMarks.written || ''}" ${isLocked ? 'readonly' : ''}></td>
-            <td><input type="number" class="marks-input" data-type="practical" data-roll="${student.roll}" min="0" max="${fullMarks.practical}" 
-                value="${studentMarks.practical || ''}" ${isLocked ? 'readonly' : ''}></td>
+            <td><input type="number" class="mark-input" data-roll="${student.roll}" data-type="written" value="${marks.written || ''}" min="0" max="40"></td>
+            <td><input type="number" class="mark-input" data-roll="${student.roll}" data-type="practical" value="${marks.practical || ''}" min="0" max="10"></td>
         `;
-        tableBody.appendChild(row);
     });
 
-    // টেবিলটি দেখানো
     tableContainer.style.display = 'block';
+    actionButtons.style.display = 'flex';
 
-    // ইনপুট ভ্যালিডেশনের জন্য ইভেন্ট লিসেনার যোগ করা
-    addInputValidation(fullMarks);
+    updateUIForStatus(marksheet.status || 'draft');
 }
 
 /**
- * মার্কস ইনপুট ফিল্ডে ভ্যালিডেশন যোগ করে।
- * @param {object} fullMarks - Written এবং Practical-এর ফুল মার্কস।
+ * Updates buttons and inputs based on the marksheet status.
  */
-function addInputValidation(fullMarks) {
-    const inputs = document.querySelectorAll('.marks-input');
-    const warningMessage = document.getElementById('warning-message');
+function updateUIForStatus(status) {
+    const inputs = document.querySelectorAll('.mark-input');
+    const saveDraftBtn = document.getElementById('saveDraftBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    const unlockBtn = document.getElementById('unlockBtn');
+    const statusDisplay = document.getElementById('marks-status-display');
 
-    inputs.forEach(input => {
-        input.addEventListener('input', (e) => {
-            const value = parseInt(e.target.value);
-            const type = e.target.dataset.type;
-            const maxMarks = (type === 'written') ? fullMarks.written : fullMarks.practical;
+    // Default state (editable)
+    let isEditable = true;
+    saveDraftBtn.style.display = 'inline-block';
+    submitBtn.style.display = 'inline-block';
+    unlockBtn.style.display = 'none';
+    statusDisplay.style.display = 'inline-block';
 
-            if (value > maxMarks) {
-                warningMessage.textContent = `ভুল ইনপুট! সর্বোচ্চ নম্বর ${maxMarks}-এর বেশি হতে পারে না।`;
-                warningMessage.style.display = 'block';
-                e.target.value = '00'; // ব্যবহারকারীর নির্দেশ অনুযায়ী 00 করা হলো
-                e.target.style.backgroundColor = '#ffe6e6'; // ভুল বোঝানোর জন্য রঙ পরিবর্তন
+    if (status === 'submitted') {
+        isEditable = false;
+        saveDraftBtn.style.display = 'none';
+        submitBtn.style.display = 'none';
+        unlockBtn.style.display = 'inline-block';
+        unlockBtn.disabled = false;
+        unlockBtn.textContent = 'আনলকের জন্য অনুরোধ করুন';
+        statusDisplay.textContent = 'Status: Submitted';
+        statusDisplay.className = 'status-badge submitted';
+    } else if (status === 'pending_unlock') {
+        isEditable = false;
+        saveDraftBtn.style.display = 'none';
+        submitBtn.style.display = 'none';
+        unlockBtn.style.display = 'inline-block';
+        unlockBtn.disabled = true;
+        unlockBtn.textContent = 'Unlock Requested';
+        statusDisplay.textContent = 'Status: Pending Unlock';
+        statusDisplay.className = 'status-badge pending';
+    } else { // 'draft' or 'new'
+        statusDisplay.textContent = 'Status: Draft';
+        statusDisplay.className = 'status-badge draft';
+    }
 
-                // কিছুক্ষণ পর সতর্কবার্তা ও রঙ স্বাভাবিক করা
-                setTimeout(() => {
-                    warningMessage.style.display = 'none';
-                    e.target.style.backgroundColor = '';
-                }, 3000);
-            } else if (value < 0) {
-                e.target.value = '0';
-            }
-        });
-    });
+    inputs.forEach(input => input.disabled = !isEditable);
 }
 
 /**
- * Saves marks as a draft or submits them.
- * @param {'draft' | 'submitted'} status - The status to save the marks with.
+ * Handles the click on the "Submit" button by showing a confirmation modal.
+ */
+function handleSubmitClick() {
+    const modal = document.getElementById('confirmation-modal');
+    const confirmBtn = document.getElementById('modal-confirm-btn');
+    const cancelBtn = document.getElementById('modal-cancel-btn');
+    const closeBtn = modal.querySelector('.modal-close-btn');
+
+    modal.style.display = 'flex';
+
+    // Use .onclick to ensure we have only one listener
+    confirmBtn.onclick = () => {
+        saveOrSubmitMarks('submitted');
+        modal.style.display = 'none';
+    };
+    cancelBtn.onclick = () => modal.style.display = 'none';
+    closeBtn.onclick = () => modal.style.display = 'none';
+}
+
+/**
+ * Collects marks from the table and sends them to the server.
+ * @param {string} status - 'draft' or 'submitted'.
  */
 async function saveOrSubmitMarks(status) {
-    const warningMessage = document.getElementById('warning-message');
     const section = document.getElementById('section').value;
     const evolution = document.getElementById('evolution').value;
-    const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
-    const subject = loggedInUser.subject;
-    const currentYear = new Date().getFullYear();
+    const user = JSON.parse(sessionStorage.getItem('loggedInUser'));
+    const year = new Date().getFullYear();
 
-    const marksPayload = { status: status, data: {} };
-    const inputs = document.querySelectorAll('.marks-input');
-    let allFilled = true;
-
+    const marksData = {};
+    const inputs = document.querySelectorAll('.mark-input');
     inputs.forEach(input => {
         const roll = input.dataset.roll;
         const type = input.dataset.type;
-        if (!marksPayload.data[roll]) {
-            marksPayload.data[roll] = {};
+        if (!marksData[roll]) {
+            marksData[roll] = {};
         }
-        if (input.value === '') {
-            allFilled = false;
-        }
-        marksPayload.data[roll][type] = input.value || '00';
+        marksData[roll][type] = input.value || null; // Store null if empty
     });
 
-    if (status === 'submitted' && !allFilled) {
-        if (!confirm('কিছু ছাত্রছাত্রীর নম্বর দেওয়া হয়নি। আপনি কি এই অবস্থাতেই সাবমিট করতে চান?')) {
-            return;
+    const payload = {
+        year,
+        section,
+        evolution,
+        subject: user.subject,
+        marksPayload: {
+            status: status,
+            data: marksData
         }
-    }
+    };
 
     try {
         const response = await fetch('/api/marks', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ year: currentYear, section, subject, evolution, marksPayload })
+            body: JSON.stringify(payload)
         });
 
-        if (!response.ok) throw new Error('সার্ভারে সেভ করা যায়নি।');
-
-        const message = status === 'draft' ? 'নম্বর ড্রাফট হিসাবে সেভ করা হয়েছে।' : 'নম্বর সফলভাবে সাবমিট করা হয়েছে! ডেটা এখন লকড।';
-        warningMessage.textContent = message;
-        warningMessage.style.color = 'green';
-        warningMessage.style.backgroundColor = '#e6ffed';
-        warningMessage.style.display = 'block';
-
-        setTimeout(() => { warningMessage.style.display = 'none'; }, 5000);
-
-        if (status === 'submitted') {
-            loadStudentListForMarksEntry();
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message);
         }
+
+        const result = await response.json();
+        alert(result.message);
+
+        // Update UI based on the new status
+        updateUIForStatus(status);
+
     } catch (error) {
-        warningMessage.textContent = `ত্রুটি: ${error.message}`;
-        warningMessage.style.color = 'red';
-        warningMessage.style.display = 'block';
+        console.error('Error saving marks:', error);
+        alert(`একটি ত্রুটি ঘটেছে: ${error.message}`);
     }
 }
 
 /**
- * Sends an unlock request to the admin.
+ * Sends a request to the admin to unlock a submitted marksheet.
  */
-async function requestUnlock() {
-    if (!confirm('আপনি কি সত্যিই এই মার্কশিট আনলক করার জন্য অ্যাডমিনের কাছে অনুরোধ পাঠাতে চান?')) {
+async function handleUnlockRequest() {
+    if (!confirm('আপনি কি নিশ্চিতভাবে এই মার্কশিটটি আনলক করার জন্য অনুরোধ করতে চান?')) {
         return;
     }
 
     const section = document.getElementById('section').value;
     const evolution = document.getElementById('evolution').value;
-    const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
-    const currentYear = new Date().getFullYear();
+    const user = JSON.parse(sessionStorage.getItem('loggedInUser'));
+    const year = new Date().getFullYear();
 
-    const requestPayload = {
-        teacherName: loggedInUser.fullName,
-        subject: loggedInUser.subject,
-        section, evolution, year: currentYear,
+    const payload = {
+        teacherName: user.fullName,
+        subject: user.subject,
+        year: year,
+        section: section,
+        evolution: evolution,
         status: 'pending'
     };
 
@@ -249,99 +239,22 @@ async function requestUnlock() {
         const response = await fetch('/api/unlock-requests', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(requestPayload)
+            body: JSON.stringify(payload)
         });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message);
+        }
+
         const result = await response.json();
-        if (!response.ok) throw new Error(result.message);
         alert(result.message);
+
+        // Update the marksheet status to 'pending_unlock' on the server
+        await saveOrSubmitMarks('pending_unlock');
+
     } catch (error) {
-        alert(`ত্রুটি: ${error.message}`);
-    }
-}
-
-async function updateMarksStatus(section, evolution, newStatus) {
-    const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
-    const currentYear = new Date().getFullYear();
-    const subject = loggedInUser.subject;
-
-    try {
-        // First, get the current marks data
-        const res = await fetch(`/api/marks/${currentYear}/${section}/${subject}/${evolution}`);
-        const marksPayload = await res.json();
-        
-        // Update status
-        marksPayload.status = newStatus;
-
-        // Post it back
-        await fetch('/api/marks', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ year: currentYear, section, subject, evolution, marksPayload })
-        });
-    } catch (error) {
-        console.error("Failed to update marks status:", error);
-    }
-}
-
-/**
- * Loads unlock notifications for the teacher.
- */
-async function loadNotifications() {
-    const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
-    const allRequests = await (await fetch('/api/unlock-requests')).json();
-    const approvedRequests = allRequests.filter(req => 
-        req.subject === loggedInUser.subject && 
-        req.teacherName === loggedInUser.fullName && 
-        req.status === 'approved'
-    );
-
-    const badge = document.getElementById('notification-badge');
-    const dropdown = document.getElementById('notification-dropdown');
-    dropdown.innerHTML = '';
-
-    if (approvedRequests.length > 0) {
-        badge.textContent = approvedRequests.length;
-        badge.style.display = 'block';
-
-        approvedRequests.forEach(req => {
-            const item = document.createElement('a');
-            item.href = '#';
-            item.className = 'notification-item';
-            item.textContent = `অনুমোদন: সেকশন ${req.section}, ইভ্যালুয়েশন ${req.evolution} আনলক করা হয়েছে।`;
-            item.dataset.requestId = req.id;
-            item.dataset.section = req.section;
-            item.dataset.evolution = req.evolution;
-            item.addEventListener('click', handleNotificationClick);
-            dropdown.appendChild(item);
-        });
-    } else {
-        badge.style.display = 'none';
-        dropdown.innerHTML = '<a href="#" style="text-align: center; cursor: default;">কোনো নতুন নোটিফিকেশন নেই।</a>';
-    }
-}
-
-/**
- * Handles click on a notification item.
- * @param {Event} e The click event.
- */
-async function handleNotificationClick(e) {
-    e.preventDefault();
-    const { requestId, section, evolution } = e.target.dataset;
-
-    // Update status to make it editable
-    await updateMarksStatus(section, evolution, 'draft');
-
-    // Remove the request from server
-    try {
-        await fetch(`/api/unlock-requests/${requestId}`, { method: 'DELETE' });
-        alert(`মার্কশিট (সেকশন: ${section}, ইভ্যালুয়েশন: ${evolution}) এখন সম্পাদনার জন্য আনলক করা হয়েছে।`);
-        
-        // Reload notifications and the table view
-        loadNotifications();
-        document.getElementById('section').value = section;
-        document.getElementById('evolution').value = evolution;
-        loadStudentListForMarksEntry();
-    } catch (error) {
-        alert('নোটিফিকেশন মুছতে সমস্যা হয়েছে।');
+        console.error('Error requesting unlock:', error);
+        alert(`একটি ত্রুটি ঘটেছে: ${error.message}`);
     }
 }

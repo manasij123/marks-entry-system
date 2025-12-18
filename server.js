@@ -276,11 +276,24 @@ app.get('/api/marks/consolidated/:year/:section', async (req, res) => {
  */
 app.get('/api/unlock-requests', async (req, res) => {
     const requests = await db.collection('unlockRequests').find({}).toArray();
-    res.json(requests.map(r => ({...r, id: r._id.toString() }))); // Convert ObjectId to string for frontend
+    res.json(requests.map(r => ({...r, id: r._id.toString() })));
 });
 
 app.post('/api/unlock-requests', async (req, res) => {
     const newRequest = req.body;
+    
+    // Find the marksheet to ensure it exists and is submitted
+    const marksheet = await db.collection('marks').findOne({
+        year: newRequest.year,
+        section: newRequest.section,
+        subject: newRequest.subject,
+        evolution: newRequest.evolution
+    });
+
+    if (!marksheet || (marksheet.status !== 'submitted' && marksheet.status !== 'pending_unlock')) {
+        return res.status(400).json({ message: 'শুধুমাত্র জমা দেওয়া মার্কশিটের জন্য অনুরোধ করা যাবে।' });
+    }
+
     const existing = await db.collection('unlockRequests').findOne({
         teacherName: newRequest.teacherName,
         subject: newRequest.subject,
@@ -299,13 +312,27 @@ app.post('/api/unlock-requests', async (req, res) => {
 app.put('/api/unlock-requests/:id/approve', async (req, res) => {
     const { id } = req.params;
     try {
-        const result = await db.collection('unlockRequests').updateOne({ _id: new ObjectId(id) }, { $set: { status: 'approved' } });
-        if (result.modifiedCount > 0) {
-            res.json({ message: 'অনুরোধ অনুমোদিত হয়েছে।' });
-        } else {
-            res.status(404).json({ message: 'অনুরোধটি খুঁজে পাওয়া যায়নি।' });
+        const request = await db.collection('unlockRequests').findOne({ _id: new ObjectId(id) });
+        if (!request) {
+            return res.status(404).json({ message: 'অনুরোধটি খুঁজে পাওয়া যায়নি।' });
         }
+
+        // Update the marksheet status back to 'draft'
+        await db.collection('marks').updateOne(
+            {
+                year: request.year,
+                section: request.section,
+                subject: request.subject,
+                evolution: request.evolution
+            },
+            { $set: { status: 'draft' } }
+        );
+
+        // Delete the request after approval
+        await db.collection('unlockRequests').deleteOne({ _id: new ObjectId(id) });
+        res.json({ message: 'অনুরোধ অনুমোদিত হয়েছে এবং মার্কশিটটি আনলক করা হয়েছে।' });
     } catch (error) {
+        console.error("Error approving request:", error);
         res.status(400).json({ message: 'অবৈধ অনুরোধ আইডি।' });
     }
 });
@@ -314,7 +341,8 @@ app.delete('/api/unlock-requests/:id', async (req, res) => {
     const { id } = req.params;
     try {
         await db.collection('unlockRequests').deleteOne({ _id: new ObjectId(id) });
-        res.status(200).json({ message: 'নোটিফিকেশন মুছে ফেলা হয়েছে।' });
+        // Note: Denying doesn't automatically change marksheet status. Teacher can request again.
+        res.status(200).json({ message: 'অনুরোধটি বাতিল করা হয়েছে।' });
     } catch (error) {
         res.status(400).json({ message: 'অবৈধ অনুরোধ আইডি।' });
     }
@@ -344,6 +372,23 @@ app.put('/api/teachers/:id/reset-password', async (req, res) => {
     } else {
         res.status(404).json({ message: 'অনুরোধটি খুঁজে পাওয়া যায়নি।' });
     }
+});
+
+/**
+ * API Endpoint: Save or Submit Marks
+ */
+app.post('/api/marks', async (req, res) => {
+    const { year, section, subject, evolution, marksPayload } = req.body;
+    if (!year || !section || !subject || !evolution || !marksPayload) {
+        return res.status(400).json({ message: 'অবৈধ অনুরোধ।' });
+    }
+    const marksCollection = db.collection('marks');
+    await marksCollection.updateOne(
+        { year: parseInt(year), section, subject, evolution },
+        { $set: { status: marksPayload.status, data: marksPayload.data } },
+        { upsert: true }
+    );
+    res.status(200).json({ message: `মার্কস সফলভাবে '${marksPayload.status}' হিসেবে সেভ করা হয়েছে।` });
 });
 
 // --- WebSocket Server Setup ---
