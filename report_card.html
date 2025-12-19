@@ -8,94 +8,71 @@
 </head>
 <body>
     <!-- This is a template for a single report card. It will be cloned for each student. -->
-    <div id="report-card-template" class="report-card-container">
-        <div class="report-card">
-            <header class="card-header">
-                <div class="logo-placeholder">
-                    <p>School Logo</p>
-                </div>
-                <div class="school-details">
-                    <h1>School Name</h1>
-                    <p>UDISE Code: XXXXXXXXXXX | Circle: YYYYY | District: ZZZZZ</p>
-                    <h2>Progress Report Card - <span class="report-year"></span></h2>
-                </div>
-            </header>
+    <div id="report-card-template">
+        <div class="header">
+            <h1>DESH BANDHU PRATHAMIK VIDYALAY</h1>
+            <div class="sub">UDISE CODE : 19073102304 | CIRCLE : SARGACHHI, DISTRICT : MURSHIDABAD</div>
+            <div class="title">Continuous and Comprehensive Evaluation Progress Report Card</div>
+            <div class="sub">Academic Session - <span class="report-year">2023</span></div>
+        </div>
 
-            <section class="student-profile">
-                <div class="profile-row">
-                    <p><strong>Student Name:</strong> <span class="student-name"></span></p>
-                    <p><strong>Class:</strong> <span class="student-class"></span></p>
-                    <p><strong>Roll No:</strong> <span class="student-roll"></span></p>
-                </div>
-                <div class="profile-row">
-                    <p><strong>Mother's Name:</strong> <span class="mother-name"></span></p>
-                    <p><strong>Father's Name:</strong> <span class="father-name"></span></p>
-                    <p><strong>Student ID:</strong> <span class="student-id"></span></p>
-                </div>
-            </section>
+        <div class="student">
+            <span><b>Name:</b> <span class="student-name"></span></span>
+            <span><b>Medium:</b> BENGALI</span>
+            <span><b>Class:</b> <span class="student-class"></span></span>
+            <span><b>Roll:</b> <span class="student-roll"></span></span><br/>
+            <span><b>Mother:</b> <span class="mother-name"></span></span>
+            <span><b>Father:</b> <span class="father-name"></span></span>
+            <span><b>Guardian:</b> <span class="guardian-name"></span></span>
+            <span><b>Student ID:</b> <span class="student-id"></span></span>
+        </div>
 
-            <section class="evaluation-section">
-                <h3>Formative Evaluation</h3>
-                <table class="evaluation-table">
-                    <thead>
-                        <tr>
-                            <th>Indicator Name</th>
-                            <th>Stage I</th>
-                            <th>Stage II</th>
-                            <th>Stage III</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>Participation</td><td>A</td><td>B</td><td>A</td></tr>
-                        <tr><td>Questioning and Experimentation</td><td>B</td><td>A</td><td>A</td></tr>
-                        <tr><td>Interpretation and Application</td><td>A</td><td>A</td><td>B</td></tr>
-                        <tr><td>Empathy and Co-operation</td><td>A</td><td>A</td><td>A</td></tr>
-                        <tr><td>Aesthetic and Creative Expression</td><td>B</td><td>A</td><td>B</td></tr>
-                    </tbody>
+        <div class="tables">
+            <div class="table-box">
+                <div class="table-title">Formative Evaluation</div>
+                <table>
+                    <tr><th>Name of the Indicators</th><th>I (10)</th><th>II (20)</th><th>III (20)</th></tr>
+                    <tr><td>Participation</td><td></td><td></td><td></td></tr>
+                    <tr><td>Questioning and Experimentation</td><td></td><td></td><td></td></tr>
+                    <tr><td>Interpretation and Application</td><td></td><td></td><td></td></tr>
+                    <tr><td>Empathy and Co-operation</td><td></td><td></td><td></td></tr>
+                    <tr><td>Aesthetic and Creative Expression</td><td></td><td></td><td></td></tr>
                 </table>
-            </section>
+            </div>
 
-            <section class="evaluation-section">
-                <h3>Summative Evaluation</h3>
-                <table class="evaluation-table summative-table">
-                    <thead>
-                        <tr>
-                            <th>Abilities</th>
-                            <th>I (10)</th>
-                            <th>II (10)</th>
-                            <th>III (30)</th>
-                            <th>Total (50)</th>
-                            <th>Percentage (%)</th>
-                            <th>Grade</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>Ability in Mental and Physical Coordination</td><td>8</td><td>9</td><td>25</td><td>42</td><td>84%</td><td>A+</td></tr>
-                        <tr><td>Ability to Communicate</td><td>7</td><td>8</td><td>22</td><td>37</td><td>74%</td><td>A</td></tr>
-                        <tr><td>Ability in Problem Solving</td><td>9</td><td>7</td><td>26</td><td>42</td><td>84%</td><td>A+</td></tr>
-                        <tr><td>Ability to Correlate</td><td>8</td><td>8</td><td>24</td><td>40</td><td>80%</td><td>A+</td></tr>
-                    </tbody>
+            <div class="table-box">
+                <div class="table-title">Summative Evaluation</div>
+                <table>
+                    <tr><th>Name of the Indicators</th><th>I (10)</th><th>II (10)</th><th>III (30)</th><th>Total</th><th>%</th><th>Grade</th></tr>
+                    <tr><td>Ability in Mental & Physical Coordination</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                    <tr><td>Ability in Problem Solving</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                    <tr><td>Ability to Communicate</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                    <tr><td>Ability to Correlate</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
                 </table>
-            </section>
+            </div>
+        </div>
 
-            <footer class="card-footer">
-                <div class="grand-total">
-                    <p><strong>Grand Total:</strong> 161/200</p>
-                    <p><strong>Overall Percentage:</strong> 80.5%</p>
-                    <p><strong>Overall Grade:</strong> A+</p>
-                </div>
-                <div class="signatures">
-                    <div class="sig-box">
-                        <p>Guardian's Signature</p>
-                    </div>
-                    <div class="sig-box">
-                        <p>Class Teacher's Signature</p>
-                    </div>
-                    <div class="sig-box">
-                        <p>Head Teacher's Signature</p>
-                    </div>
-                </div>
-            </footer>
+        <div class="summary">
+            <div>RESULT : <b>Promoted</b></div>
+            <div>GRAND TOTAL : <b></b></div>
+            <div>PERCENTAGE : <b></b></div>
+            <div>OVER ALL GRADE : <b></b></div>
+        </div>
+
+        <div class="footer">
+            <div class="rubric">
+                <div><b>Participation</b><br/>a) Actively participates & leads<br/>b) Exchanges views<br/>c) Limited exchange<br/>d) Little interest</div>
+                <div><b>Questioning</b><br/>a) Asks & experiments<br/>b) Asks, no experiment<br/>c) Few questions<br/>d) Very few</div>
+                <div><b>Interpretation</b><br/>a) Interprets & applies<br/>b) Interprets only<br/>c) Partial<br/>d) Memorises</div>
+                <div><b>Empathy</b><br/>a) Empathetic to all<br/>b) Known people<br/>c) Known only<br/>d) Little empathy</div>
+                <div><b>Aesthetic</b><br/>a) Inside & outside<br/>b) Inside only<br/>c) Interested<br/>d) Least interest</div>
+            </div>
+        </div>
+
+        <div class="sign">
+            <div>Guardian's Signature</div>
+            <div>Class Teacher's Signature</div>
+            <div>Signature of HoI</div>
         </div>
     </div>
 </body>
