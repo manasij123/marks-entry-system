@@ -38,6 +38,15 @@ th:first-child, td:first-child { text-align: left; }
   justify-content: space-between;
   font-size: 12px;
 }
+
+#report-card-template {
+  page-break-after: always;
+}
+
+#report-card-template:last-child {
+  page-break-after: auto;
+}
+
 @media print {
   body { margin: 0; }
 }
