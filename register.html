@@ -27,9 +27,14 @@
                     <option value="GEGR">Geography</option>
                 </select>
             </div>
-            <div class="input-group">
+            <div class="input-group" style="position: relative;">
                 <label for="password">পাসওয়ার্ড</label>
-                <input type="password" id="password" name="password" placeholder="একটি শক্তিশালী পাসওয়ার্ড তৈরি করুন" required>
+                <input type="password" id="password" name="password" placeholder="একটি শক্তিশালী পাসওয়ার্ড তৈরি করুন" required style="padding-right: 40px;">
+                <span id="togglePassword" style="position: absolute; right: 10px; top: 38px; cursor: pointer; font-size: 1.2rem;" title="পাসওয়ার্ড দেখুন">👁️</span>
+            </div>
+            <div class="input-group">
+                <label for="securityKey">সিকিউরিটি কি (Security Key)</label>
+                <input type="text" id="securityKey" name="securityKey" placeholder="যেমন: 1990 (জন্মসাল)" pattern="\d{4,}" title="অনুগ্রহ করে কমপক্ষে ৪টি সংখ্যা দিন (যেমন: আপনার জন্মসাল)" required>
             </div>
             <button type="submit" class="btn">রেজিস্টার করুন</button>
         </form>
@@ -42,6 +47,7 @@
                 <h3>আপনার রেজিস্ট্রেশন সফল হয়েছে!</h3>
                 <p>আপনার ইউনিক আইডি হলো: <strong id="generatedId"></strong></p>
                 <p>অনুগ্রহ করে এই আইডিটি কপি করে রাখুন। এই বার্তাটি <span id="countdown">60</span> সেকেন্ড পর বন্ধ হয়ে যাবে।</p>
+                <button id="goToLoginBtn" class="btn" style="margin-top: 10px; background-color: #28a745;">লগইন পেজে যান</button>
             </div>
         </div>
     </div>

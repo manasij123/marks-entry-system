@@ -2,6 +2,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const registerForm = document.getElementById('registerForm');
     const loginForm = document.getElementById('loginForm');
 
+    // Toggle Password Visibility
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+    if (togglePassword && passwordInput) {
+        togglePassword.addEventListener('click', () => {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            togglePassword.textContent = type === 'password' ? '👁️' : '🙈';
+        });
+    }
+
     // রেজিস্ট্রেশন পেজের জন্য লজিক
     if (registerForm) {
         registerForm.addEventListener('submit', async (e) => {
@@ -10,12 +21,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const fullName = document.getElementById('fullName').value.trim();
             const subject = document.getElementById('subject').value;
             const password = document.getElementById('password').value;
+            const securityKey = document.getElementById('securityKey') ? document.getElementById('securityKey').value.trim() : null;
 
             try {
                 const response = await fetch('/api/register', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ fullName, subject, password })
+                    body: JSON.stringify({ fullName, subject, password, securityKey })
                 });
 
                 const result = await response.json();
@@ -28,10 +40,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const { uniqueId } = result;
                 showUniqueIdPopup(uniqueId);
 
-                // ৬০ সেকেন্ড পর অটো-লগইন করে ড্যাশবোর্ডে পাঠানো
+                // ৬০ সেকেন্ড পর লগইন পেজে রিডাইরেক্ট করা
                 setTimeout(() => {
-                    sessionStorage.setItem('loggedInUser', JSON.stringify({ uniqueId, fullName, subject }));
-                    window.location.href = 'dashboard.html';
+                    window.location.href = 'login.html';
                 }, 60000);
 
             } catch (error) {
@@ -86,8 +97,15 @@ function showUniqueIdPopup(uniqueId) {
     const popup = document.getElementById('uniqueIdPopup');
     const generatedIdElem = document.getElementById('generatedId');
     const countdownElem = document.getElementById('countdown');
+    const goToLoginBtn = document.getElementById('goToLoginBtn');
 
     if (!popup || !generatedIdElem || !countdownElem) return;
+
+    if (goToLoginBtn) {
+        goToLoginBtn.onclick = () => {
+            window.location.href = 'login.html';
+        };
+    }
 
     generatedIdElem.textContent = uniqueId;
     popup.style.display = 'flex';

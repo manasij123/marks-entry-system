@@ -61,7 +61,7 @@ app.get('/admin_dashboard.html', (req, res) => {
  * API Endpoint: Teacher Registration
  */
 app.post('/api/register', async (req, res) => {
-    const { fullName, subject, password } = req.body;
+    const { fullName, subject, password, securityKey } = req.body;
     if (!fullName || !subject || !password) {
         return res.status(400).json({ message: 'অনুগ্রহ করে সমস্ত ঘর পূরণ করুন।' });
     }
@@ -90,11 +90,36 @@ app.post('/api/register', async (req, res) => {
             return res.status(409).json({ message: 'এই ব্যবহারকারী ইতিমধ্যে বিদ্যমান।' });
         }
 
-        await teachers.insertOne({ _id: uniqueId, fullName, subject, password: password });
+        await teachers.insertOne({ _id: uniqueId, fullName, subject, password: password, securityKey: securityKey || null });
 
         console.log(`New teacher registered: ${fullName} (${uniqueId})`);
         res.status(201).json({ message: 'রেজিস্ট্রেশন সফল হয়েছে!', uniqueId });
     } catch (error) {
+        res.status(500).json({ message: 'সার্ভারে ত্রুটি দেখা দিয়েছে।' });
+    }
+});
+
+/**
+ * API Endpoint: Reset Password
+ */
+app.post('/api/reset-password', async (req, res) => {
+    const { uniqueId, securityKey, newPassword } = req.body;
+    if (!uniqueId || !securityKey || !newPassword) {
+        return res.status(400).json({ message: 'অনুগ্রহ করে সব তথ্য প্রদান করুন।' });
+    }
+
+    try {
+        const teachers = db.collection('teachers');
+        const teacher = await teachers.findOne({ _id: uniqueId });
+
+        if (!teacher || teacher.securityKey !== securityKey) {
+            return res.status(401).json({ message: 'ইউনিক আইডি বা সিকিউরিটি কি সঠিক নয়।' });
+        }
+
+        await teachers.updateOne({ _id: uniqueId }, { $set: { password: newPassword } });
+        res.status(200).json({ message: 'পাসওয়ার্ড সফলভাবে পরিবর্তন করা হয়েছে।' });
+    } catch (error) {
+        console.error("Error resetting password:", error);
         res.status(500).json({ message: 'সার্ভারে ত্রুটি দেখা দিয়েছে।' });
     }
 });

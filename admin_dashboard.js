@@ -7,15 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    // Add a beacon to notify the server on page close (logout)
-    window.addEventListener('unload', () => {
-        if (sessionStorage.getItem('loggedInUser')) { // Only send if user is still "logged in" on client
-            navigator.sendBeacon('/api/admin/logout', JSON.stringify({ uniqueId: user.uniqueId }));
-        }
-    });
-
-    // Establish WebSocket connection for real-time notifications
-    setupWebSocket(user.sessionToken);
     // Populate year dropdowns
     const currentYear = new Date().getFullYear();
     const yearSelects = [document.getElementById('year'), document.getElementById('viewYear'), document.getElementById('marksViewYear')];
@@ -39,44 +30,10 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('viewAllMarksBtn').addEventListener('click', viewConsolidatedMarks);
     document.getElementById('printMarksheetBtn').addEventListener('click', () => handlePrint('consolidated-marks-display'));
     document.getElementById('printProgressReportBtn').addEventListener('click', handleProgressReportPrint);
+
+    // Setup auto logout on inactivity
+    setupInactivityTimer();
 });
-
-function setupWebSocket(token) {
-    // Use wss:// for secure (https) connections, ws:// for local (http)
-    const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
-    const socket = new WebSocket(`${protocol}://${window.location.host}?token=${token}`);
-
-    socket.onopen = () => {
-        console.log('WebSocket connection established for admin.');
-    };
-
-    socket.onmessage = (event) => {
-        const message = JSON.parse(event.data);
-        if (message.type === 'LOGIN_ATTEMPT') {
-            showLoginAttemptPopup(message.ip);
-        }
-    };
-
-    socket.onclose = () => {
-        console.log('WebSocket connection closed. Attempting to reconnect...');
-        // Optional: Add reconnection logic
-    };
-}
-
-function showLoginAttemptPopup(ip) {
-    const modal = document.getElementById('login-attempt-modal');
-    const ipAddressSpan = document.getElementById('attempt-ip-address');
-    const ipInfoDiv = document.getElementById('ip-info');
-    const showIpBtn = document.getElementById('show-ip-btn');
-    const closeBtn = document.querySelector('.modal-close-btn');
-
-    ipAddressSpan.textContent = ip;
-    ipInfoDiv.style.display = 'none'; // Hide IP initially
-    modal.style.display = 'flex';
-
-    showIpBtn.onclick = () => { ipInfoDiv.style.display = 'block'; };
-    closeBtn.onclick = () => { modal.style.display = 'none'; };
-}
 
 function openTab(evt, tabName) {
     let i, tabcontent, tablinks;
@@ -414,4 +371,35 @@ async function resetPassword(teacherId) {
     } else if (newPassword !== null) {
         alert('পাসওয়ার্ড খালি রাখা যাবে না।');
     }
+}
+
+/**
+ * Sets up a timer to automatically logout the user after 1 hour of inactivity.
+ */
+function setupInactivityTimer() {
+    let inactivityTimer;
+    const oneHour = 60 * 60 * 1000; // 1 hour in milliseconds
+
+    function logoutUser() {
+        alert('দীর্ঘক্ষণ নিষ্ক্রিয় থাকার কারণে আপনার সেশন শেষ হয়ে গেছে। অনুগ্রহ করে আবার লগইন করুন।');
+        // Call the global logout function if it exists (from auth.js), otherwise do manual cleanup
+        if (typeof logout === 'function') {
+            logout();
+        } else {
+            sessionStorage.removeItem('loggedInUser');
+            window.location.href = 'login.html';
+        }
+    }
+
+    function resetTimer() {
+        clearTimeout(inactivityTimer);
+        inactivityTimer = setTimeout(logoutUser, oneHour);
+    }
+
+    // Reset timer on any user activity
+    window.onload = resetTimer;
+    document.onmousemove = resetTimer;
+    document.onkeypress = resetTimer;
+    document.onclick = resetTimer;
+    document.onscroll = resetTimer;
 }

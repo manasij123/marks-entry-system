@@ -13,9 +13,10 @@
                 <label for="uniqueId">ইউনিক আইডি</label>
                 <input type="text" id="uniqueId" name="uniqueId" placeholder="আপনার ইউনিক আইডি লিখুন" required>
             </div>
-            <div class="input-group">
+            <div class="input-group" style="position: relative;">
                 <label for="password">পাসওয়ার্ড</label>
-                <input type="password" id="password" name="password" placeholder="আপনার পাসওয়ার্ড লিখুন" required>
+                <input type="password" id="password" name="password" placeholder="আপনার পাসওয়ার্ড লিখুন" required style="padding-right: 40px;">
+                <span id="togglePassword" style="position: absolute; right: 10px; top: 38px; cursor: pointer; font-size: 1.2rem;" title="পাসওয়ার্ড দেখুন">👁️</span>
             </div>
             <button type="submit" class="btn">লগইন</button>
         </form>
