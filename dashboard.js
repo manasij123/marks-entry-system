@@ -211,27 +211,28 @@ async function saveOrSubmitMarks(status) {
         }
 
         const result = await response.json();
-        showToast(result.message);
+        showToast(result.message, 'success');
 
         // Update UI based on the new status
         updateUIForStatus(status);
 
     } catch (error) {
         console.error('Error saving marks:', error);
-        alert(`একটি ত্রুটি ঘটেছে: ${error.message}`);
+        showToast(`একটি ত্রুটি ঘটেছে: ${error.message}`, 'error');
     }
 }
 
 /**
  * Shows a toast notification message.
  * @param {string} message - The message to display.
+ * @param {string} type - The type of toast ('success' or 'error').
  */
-function showToast(message) {
+function showToast(message, type = 'success') {
     const toast = document.getElementById('toast-notification');
     toast.textContent = message;
-    toast.className = 'show';
+    toast.className = `show ${type}`;
     setTimeout(() => { 
-        toast.className = toast.className.replace('show', ''); 
+        toast.className = ''; 
     }, 3000);
 }
 
@@ -270,13 +271,13 @@ async function handleUnlockRequest() {
         }
 
         const result = await response.json();
-        alert(result.message);
+        showToast(result.message, 'success');
 
         // Update the marksheet status to 'pending_unlock' on the server
         await saveOrSubmitMarks('pending_unlock');
 
     } catch (error) {
         console.error('Error requesting unlock:', error);
-        alert(`একটি ত্রুটি ঘটেছে: ${error.message}`);
+        showToast(`একটি ত্রুটি ঘটেছে: ${error.message}`, 'error');
     }
 }
