@@ -211,7 +211,7 @@ async function saveOrSubmitMarks(status) {
         }
 
         const result = await response.json();
-        alert(result.message);
+        showToast(result.message);
 
         // Update UI based on the new status
         updateUIForStatus(status);
@@ -220,6 +220,19 @@ async function saveOrSubmitMarks(status) {
         console.error('Error saving marks:', error);
         alert(`একটি ত্রুটি ঘটেছে: ${error.message}`);
     }
+}
+
+/**
+ * Shows a toast notification message.
+ * @param {string} message - The message to display.
+ */
+function showToast(message) {
+    const toast = document.getElementById('toast-notification');
+    toast.textContent = message;
+    toast.className = 'show';
+    setTimeout(() => { 
+        toast.className = toast.className.replace('show', ''); 
+    }, 3000);
 }
 
 /**
