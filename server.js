@@ -391,6 +391,36 @@ app.post('/api/marks', async (req, res) => {
     res.status(200).json({ message: `মার্কস সফলভাবে '${marksPayload.status}' হিসেবে সেভ করা হয়েছে।` });
 });
 
+/**
+ * API Endpoint: Admin Update Single Mark
+ */
+app.post('/api/admin/update-mark', async (req, res) => {
+    const { year, section, subject, evolution, roll, type, value } = req.body;
+    
+    if (!year || !section || !subject || !evolution || !roll || !type) {
+        return res.status(400).json({ message: 'Missing required fields' });
+    }
+
+    const field = type === 'W' ? 'written' : 'practical';
+    const updatePath = `data.${roll}.${field}`;
+
+    try {
+        const marksCollection = db.collection('marks');
+        await marksCollection.updateOne(
+            { year: parseInt(year), section, subject, evolution },
+            { 
+                $set: { [updatePath]: value },
+                $setOnInsert: { status: 'draft' } 
+            },
+            { upsert: true }
+        );
+        res.json({ success: true, message: 'Updated successfully' });
+    } catch (error) {
+        console.error("Update mark error:", error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
 // --- WebSocket Server Setup ---
 const wss = new WebSocketServer({ server });
 

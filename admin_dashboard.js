@@ -221,7 +221,20 @@ async function viewConsolidatedMarks() {
         const studentMarks = marksByStudent[student.roll];
         subjects.forEach(sub => {
             evolutions.forEach(evo => {
-                tableHTML += `<td>${studentMarks[sub][evo].W}</td><td>${studentMarks[sub][evo].P}</td>`;
+                const wVal = studentMarks[sub][evo].W;
+                const pVal = studentMarks[sub][evo].P;
+                
+                tableHTML += `<td class="editable-mark" 
+                    data-year="${year}" data-section="${section}" 
+                    data-subject="${sub}" data-evo="${evo}" 
+                    data-roll="${student.roll}" data-type="W"
+                    onclick="makeEditable(this)">${wVal}</td>`;
+                    
+                tableHTML += `<td class="editable-mark" 
+                    data-year="${year}" data-section="${section}" 
+                    data-subject="${sub}" data-evo="${evo}" 
+                    data-roll="${student.roll}" data-type="P"
+                    onclick="makeEditable(this)">${pVal}</td>`;
             });
         });
         tableHTML += `</tr>`;
@@ -231,6 +244,65 @@ async function viewConsolidatedMarks() {
     displayDiv.innerHTML = tableHTML;
     printBtn.style.display = 'inline-block';
     progressReportPrintBtn.style.display = 'inline-block';
+}
+
+/**
+ * Makes a table cell editable on click.
+ * @param {HTMLElement} td - The table cell element.
+ */
+function makeEditable(td) {
+    if (td.querySelector('input')) return; // Already editing
+
+    const currentValue = td.innerText === '-' ? '' : td.innerText;
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.value = currentValue;
+    input.style.width = '50px';
+    input.style.textAlign = 'center';
+    
+    const save = async () => {
+        const newValue = input.value.trim();
+        const originalValue = currentValue === '' ? '-' : currentValue;
+        
+        if (newValue === currentValue) {
+            td.innerText = originalValue;
+            return;
+        }
+
+        const { year, section, subject, evo, roll, type } = td.dataset;
+        
+        try {
+            const response = await fetch('/api/admin/update-mark', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    year, section, subject, evolution: evo, roll, type, value: newValue
+                })
+            });
+            
+            if (response.ok) {
+                td.innerText = newValue === '' ? '-' : newValue;
+                td.style.backgroundColor = '#d4edda'; // Success flash color
+                setTimeout(() => td.style.backgroundColor = '', 1000);
+            } else {
+                alert('আপডেট করতে সমস্যা হয়েছে।');
+                td.innerText = originalValue;
+            }
+        } catch (e) {
+            console.error(e);
+            alert('সার্ভার এরর।');
+            td.innerText = originalValue;
+        }
+    };
+
+    input.addEventListener('blur', save);
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') input.blur();
+    });
+
+    td.innerText = '';
+    td.appendChild(input);
+    input.focus();
 }
 
 function handlePrint(elementId) {

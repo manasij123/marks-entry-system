@@ -76,6 +76,15 @@
     background-color: #f2f2f2;
 }
 
+.editable-mark {
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.editable-mark:hover {
+    background-color: #e9ecef;
+    position: relative;
+}
+
 .student-details-display, .consolidated-marks-display {
     margin-top: 1.5rem;
     overflow-x: auto;
