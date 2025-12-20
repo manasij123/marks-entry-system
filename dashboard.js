@@ -88,6 +88,15 @@ function displayMarksTable(students, marksheet, sheetInfo) {
         `;
     });
 
+    // Add event listeners to remove leading zeros on blur
+    tableBody.querySelectorAll('.mark-input').forEach(input => {
+        input.addEventListener('blur', function() {
+            if (this.value !== '' && !isNaN(this.value)) {
+                this.value = Number(this.value).toString();
+            }
+        });
+    });
+
     tableContainer.style.display = 'block';
     actionButtons.style.display = 'flex';
 

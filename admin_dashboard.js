@@ -261,7 +261,13 @@ function makeEditable(td) {
     input.style.textAlign = 'center';
     
     const save = async () => {
-        const newValue = input.value.trim();
+        let newValue = input.value.trim();
+
+        // যদি ইনপুটটি সংখ্যা হয়, তবে সামনের শূন্যগুলো সরিয়ে ফেলুন
+        if (newValue !== '' && !isNaN(newValue)) {
+            newValue = String(Number(newValue));
+        }
+
         const originalValue = currentValue === '' ? '-' : currentValue;
         
         if (newValue === currentValue) {
