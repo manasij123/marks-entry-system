@@ -21,13 +21,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const fullName = document.getElementById('fullName').value.trim();
             const subject = document.getElementById('subject').value;
             const password = document.getElementById('password').value;
-            const securityKey = document.getElementById('securityKey') ? document.getElementById('securityKey').value.trim() : null;
 
             try {
                 const response = await fetch('/api/register', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ fullName, subject, password, securityKey })
+                    body: JSON.stringify({ fullName, subject, password })
                 });
 
                 const result = await response.json();
