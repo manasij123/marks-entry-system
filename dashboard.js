@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('saveDraftBtn').addEventListener('click', () => saveOrSubmitMarks('draft'));
     document.getElementById('submitBtn').addEventListener('click', handleSubmitClick);
     document.getElementById('unlockBtn').addEventListener('click', handleUnlockRequest);
+    document.getElementById('mobileTabBtn').addEventListener('click', handleMobileTab);
 
     // Initial setup
     checkAuth();
@@ -220,6 +221,34 @@ async function saveOrSubmitMarks(status) {
         console.error('Error saving marks:', error);
         showToast(`একটি ত্রুটি ঘটেছে: ${error.message}`, 'error');
     }
+}
+
+/**
+ * Handles the Mobile Tab button click.
+ * Moves focus to the next input field and scrolls it into view.
+ */
+function handleMobileTab(e) {
+    e.preventDefault(); // Prevent default button behavior
+    
+    // Get all enabled mark inputs
+    const inputs = Array.from(document.querySelectorAll('.mark-input:not([disabled])'));
+    if (inputs.length === 0) return;
+
+    const currentInput = document.activeElement;
+    const currentIndex = inputs.indexOf(currentInput);
+
+    let nextIndex = 0;
+    if (currentIndex !== -1) {
+        nextIndex = currentIndex + 1;
+        if (nextIndex >= inputs.length) {
+            nextIndex = 0; // Loop back to the first input if at the end
+        }
+    }
+
+    const nextInput = inputs[nextIndex];
+    nextInput.focus();
+    // Scroll smoothly to center the input, ensuring it's visible above the keyboard
+    nextInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
 /**

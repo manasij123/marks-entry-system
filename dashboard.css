@@ -281,6 +281,11 @@
     border-radius: 5px;
 }
 
+/* Wrapper for buttons to handle mobile layout */
+.mobile-btn-group {
+    display: contents; /* In desktop, children act as direct children of parent */
+}
+
 /* --- Responsive Design for Dashboard --- */
 @media (max-width: 768px) {
     .header {
@@ -293,11 +298,30 @@
     .controls-container {
         flex-direction: column;
         align-items: stretch;
-        gap: 1.5rem;
+        gap: 0.8rem;
+        padding: 1rem;
     }
     .control-group {
-        justify-content: space-between;
+        justify-content: flex-start;
+        gap: 0.5rem;
     }
+    .control-group select {
+        flex: 1;
+    }
+    
+    /* Mobile Button Group Styling */
+    .mobile-btn-group {
+        display: flex;
+        gap: 10px;
+        width: 100%;
+    }
+    .mobile-btn-group .btn {
+        flex: 1; /* Both buttons take equal width */
+    }
+    #mobileTabBtn {
+        display: block !important; /* Show tab button only on mobile */
+    }
+
     .action-buttons {
         flex-direction: column;
         align-items: stretch;
