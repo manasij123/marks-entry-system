@@ -50,3 +50,14 @@ th:first-child, td:first-child { text-align: left; }
 @media print {
   body { margin: 0; }
 }
+
+/* Screen view responsiveness: Allow scrolling instead of breaking layout */
+@media screen and (max-width: 1000px) {
+    body {
+        overflow-x: auto;
+        padding: 10px;
+    }
+    #report-card-template {
+        min-width: 900px; /* Force minimum width to keep layout intact */
+    }
+}

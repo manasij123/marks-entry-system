@@ -195,23 +195,70 @@
 }
 /* --- Responsive Design for Admin Dashboard --- */
 @media (max-width: 768px) {
+    .container {
+        padding-top: 60px;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .tab-nav {
+        top: 60px;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin-left: -10px;
+        margin-right: -10px;
+        padding-left: 10px;
+        padding-right: 10px;
+        background: #fff;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .tab-link {
+        flex: 0 0 auto; /* ট্যাবগুলো সংকুচিত হবে না */
+        padding: 10px 15px;
+        font-size: 0.9rem;
+    }
+
     .content-wrapper {
         padding: 1rem;
+        border-radius: 0;
     }
-    /* Adjust margin for smaller screens */
-    .container {
-        padding-top: 70px;
-    }
-    .tab-nav {
-        top: 55px; /* Adjust sticky position for smaller header */
-        padding-top: 0;
-    }
+
     .controls-container {
         flex-direction: column;
         align-items: stretch;
+        padding: 1rem;
+        gap: 1rem;
     }
+
+    .controls-container > * {
+        width: 100%;
+        margin: 0;
+    }
+
     .student-form .form-row {
         flex-direction: column;
         gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .student-form .btn {
+        width: 100%;
+        margin-top: 0.5rem;
+    }
+
+    .marks-table {
+        font-size: 0.85rem;
+    }
+    
+    .marks-table th, .marks-table td {
+        padding: 6px;
+    }
+
+    .modal-content {
+        width: 95%;
+        padding: 1.5rem;
+        margin: 0 10px;
     }
 }
