@@ -1,5 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Merriweather:wght@300;400;700;900&display=swap');
 
+/* Global Reset for better sizing */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-padding-top: 80px; /* ফিক্সড হেডারের জন্য স্ক্রল অ্যাডজাস্টমেন্ট */
+}
+
 :root {
     --primary-color: #2c3e50; /* গাঢ় নীল - প্রাতিষ্ঠানিক */
     --secondary-color: #34495e;
