@@ -160,8 +160,12 @@ async function viewConsolidatedMarks() {
     }
 
     // Fetch subjects dynamically
-    const subjectsRes = await fetch('/api/subjects');
-    const subjects = await subjectsRes.json();
+    // const subjectsRes = await fetch('/api/subjects');
+    // const subjects = await subjectsRes.json();
+
+    // Manually define subjects to ensure all columns appear
+    // আপনার ডাটাবেসে সাবজেক্টের নাম বা কোড যা দেওয়া আছে, ঠিক সেই বানান এখানে লিখুন
+    const subjects = ['BNGA', 'ENGL', 'MATH', 'PSC', 'LSC', 'HIST', 'GEGR'];
 
     const evolutions = ['1', '2', '3'];
     const marksByStudent = {};
