@@ -240,8 +240,30 @@ async function viewConsolidatedMarks() {
         tableHTML += `</tr>`;
     });
 
-    tableHTML += '</tbody></table>';
+    tableHTML += '</tbody>';
+
+    // Add Footer with Print Buttons
+    tableHTML += '<tfoot><tr><td colspan="2" style="text-align:right; font-weight:bold;">Print Subject:</td>';
+    subjects.forEach(sub => {
+        // Create a safe ID for the button
+        const safeSub = sub.replace(/[^a-zA-Z0-9]/g, '_');
+        tableHTML += `<td colspan="6" style="text-align:center;">
+            <button id="print-btn-${safeSub}" class="btn-action btn-primary" style="font-size: 0.8rem; padding: 2px 8px;">🖨️ Print</button>
+        </td>`;
+    });
+    tableHTML += '</tr></tfoot></table>';
+
     displayDiv.innerHTML = tableHTML;
+
+    // Attach event listeners to the new buttons
+    subjects.forEach(sub => {
+        const safeSub = sub.replace(/[^a-zA-Z0-9]/g, '_');
+        const btn = document.getElementById(`print-btn-${safeSub}`);
+        if (btn) {
+            btn.onclick = () => printSpecificSubject(sub, section, year, students, marksByStudent);
+        }
+    });
+
     printBtn.style.display = 'inline-block';
     progressReportPrintBtn.style.display = 'inline-block';
 }
@@ -480,4 +502,75 @@ function setupInactivityTimer() {
     document.onkeypress = resetTimer;
     document.onclick = resetTimer;
     document.onscroll = resetTimer;
+}
+
+/**
+ * Prints the marks list for a specific subject.
+ */
+function printSpecificSubject(subject, section, year, students, marksByStudent) {
+    const printWindow = window.open('', '', 'height=800,width=1000');
+    const evolutions = ['1', '2', '3'];
+    
+    let html = `
+        <html>
+        <head>
+            <title>Marks - ${subject}</title>
+            <style>
+                body { font-family: Arial, sans-serif; padding: 20px; }
+                h2, h3 { text-align: center; margin: 5px 0; }
+                table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 12px; }
+                th, td { border: 1px solid #000; padding: 5px; text-align: center; }
+                th { background-color: #f0f0f0; }
+                @media print {
+                    .no-print { display: none; }
+                }
+            </style>
+        </head>
+        <body>
+            <h2>Subject: ${subject}</h2>
+            <h3>Year: ${year} | Section: ${section}</h3>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th rowspan="2">Roll</th>
+                        <th rowspan="2">Name</th>
+                        <th colspan="2">Evaluation 1</th>
+                        <th colspan="2">Evaluation 2</th>
+                        <th colspan="2">Evaluation 3</th>
+                    </tr>
+                    <tr>
+                        <th>W</th><th>P</th>
+                        <th>W</th><th>P</th>
+                        <th>W</th><th>P</th>
+                    </tr>
+                </thead>
+                <tbody>
+    `;
+
+    students.sort((a, b) => a.roll - b.roll).forEach(student => {
+        const marks = marksByStudent[student.roll][subject];
+        html += `<tr>
+            <td>${student.roll}</td>
+            <td style="text-align:left;">${student.name}</td>`;
+        
+        evolutions.forEach(evo => {
+            html += `<td>${marks[evo].W}</td><td>${marks[evo].P}</td>`;
+        });
+        
+        html += `</tr>`;
+    });
+
+    html += `
+                </tbody>
+            </table>
+            <script>
+                window.onload = function() { window.print(); }
+            </script>
+        </body>
+        </html>
+    `;
+    
+    printWindow.document.write(html);
+    printWindow.document.close();
 }
