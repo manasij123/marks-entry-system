@@ -166,14 +166,25 @@
 }
 
 .marks-table th, .marks-table td {
-    border: 1px solid #eee;
+    border: 1px solid #000; /* Visible black border */
     padding: 12px;
     text-align: center;
 }
 
 .marks-table th {
-    background-color: var(--primary-color);
+    background-color: #3F00FF; /* Ultramarine */
     color: white;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.marks-table tbody tr:nth-child(odd) td {
+    background-color: #18A8D8; /* Curious */
+    color: black;
+}
+
+.marks-table tbody tr:nth-child(even) td {
+    background-color: #B2FFFF; /* Celeste */
+    color: black;
 }
 
 #table-header {

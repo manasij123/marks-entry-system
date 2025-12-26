@@ -75,17 +75,27 @@
 }
 
 .marks-table th, .marks-table td {
-    border: 1px solid #eee;
+    border: 1px solid #000; /* Visible black border */
     padding: 12px 15px;
     text-align: left;
     white-space: nowrap; /* Prevents text from wrapping */
 }
 
 .marks-table th {
-    background-color: var(--primary-color);
+    background-color: #3F00FF; /* Ultramarine */
     color: white;
     font-weight: 500;
-    border-color: var(--primary-color);
+    border: 1px solid rgba(255, 255, 255, 0.5); /* Light border for dark header */
+}
+
+.marks-table tbody tr:nth-child(odd) td {
+    background-color: #18A8D8; /* Curious */
+    color: black;
+}
+
+.marks-table tbody tr:nth-child(even) td {
+    background-color: #B2FFFF; /* Celeste */
+    color: black;
 }
 
 .editable-mark {
@@ -273,23 +283,4 @@
         padding: 1.5rem;
         margin: 0 10px;
     }
-}
-
-/* --- Custom Colors for Consolidated Marksheet Table (View All Marks) --- */
-#consolidated-marks-display .marks-table th {
-    background-color: #3F00FF; /* Ultramarine */
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.5); /* Visible light border for dark header */
-}
-
-#consolidated-marks-display .marks-table tbody tr:nth-child(odd) td {
-    background-color: #18A8D8; /* Curious */
-    color: black;
-    border: 1px solid #000; /* Visible black border */
-}
-
-#consolidated-marks-display .marks-table tbody tr:nth-child(even) td {
-    background-color: #B2FFFF; /* Celeste */
-    color: black;
-    border: 1px solid #000; /* Visible black border */
 }
