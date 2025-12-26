@@ -1,41 +1,47 @@
 /* Add margin to the main container to avoid overlap with the fixed header */
 .container {
     padding-top: 70px; /* Adjusted to match header height */
-    background-color: #f4f7f9; /* Lighter background for the main content area */
+    background-color: transparent;
 }
 
 /* Admin specific styles */
 .tab-nav {
     position: sticky; /* Make the tab bar sticky */
     top: 65px; /* Position it just below the fixed header (header height is approx 65-70px) */
-    background-color: #ffffff; /* Give it a background to avoid content showing through */
+    background-color: rgba(255, 255, 255, 0.95); /* Glass effect */
+    backdrop-filter: blur(5px);
     z-index: 999; /* Ensure it stays above content but below the main header */
     display: flex;
     flex-wrap: wrap;
-    border-bottom: 2px solid #ccc;
+    border-bottom: none;
+    gap: 10px;
     margin-bottom: 1.5rem;
-    padding-top: 5px; /* Add some space above the tabs */
+    padding: 10px 0;
 }
 
 .tab-link {
-    background: none;
-    border: none;
+    background: #fff;
+    border: 1px solid transparent;
     padding: 10px 20px;
     cursor: pointer;
     font-size: 1rem;
-    font-family: 'Hind Siliguri', sans-serif;
-    border-bottom: 3px solid transparent;
-    transition: all 0.3s ease;
+    font-family: var(--font-body);
+    border-radius: 20px; /* Pill shape */
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    color: var(--secondary-color);
 }
 
 .tab-link.active {
-    border-bottom-color: #007bff;
+    background-color: var(--primary-color);
+    color: white;
     font-weight: 600;
-    color: #007bff;
+    box-shadow: 0 4px 8px rgba(44, 62, 80, 0.2);
 }
 .tab-link:hover:not(.active) {
-    background-color: #f8f9fa;
-    color: #0056b3;
+    background-color: #e1e5ea;
+    color: var(--primary-color);
+    transform: translateY(-1px);
 }
 
 .tab-content {
@@ -43,15 +49,17 @@
 }
 
 .content-wrapper {
-    background-color: #fff;
+    background-color: var(--card-bg);
     padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
     overflow-x: auto; /* This makes the tables scrollable */
 }
 
 .content-wrapper h2 {
     margin-top: 0;
+    font-family: var(--font-heading);
+    color: var(--primary-color);
 }
 .content-wrapper hr {
     border: none;
@@ -66,14 +74,17 @@
 }
 
 .marks-table th, .marks-table td {
-    border: 1px solid #ddd;
-    padding: 10px;
+    border: 1px solid #eee;
+    padding: 12px 15px;
     text-align: left;
     white-space: nowrap; /* Prevents text from wrapping */
 }
 
 .marks-table th {
-    background-color: #f2f2f2;
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 500;
+    border-color: var(--primary-color);
 }
 
 .editable-mark {
@@ -120,10 +131,10 @@
     display: flex;
     gap: 1.5rem;
     align-items: flex-end;
-    background-color: #f8f9fa;
+    background-color: #fafafa;
     padding: 1.5rem;
     border-radius: 8px;
-    border: 1px solid #dee2e6;
+    border: 1px solid #eee;
     margin-bottom: 2rem;
     flex-wrap: wrap;
 }
@@ -149,9 +160,9 @@
 }
 
 .btn-danger { background-color: #dc3545; }
-.btn-primary { background-color: #0d6efd; }
+.btn-primary { background-color: var(--primary-color); }
 .btn-success { background-color: #198754; }
-.btn-warning { background-color: #ffc107; }
+.btn-warning { background-color: var(--accent-color); }
 
 /* --- Modal Styles for Notifications --- */
 .modal-overlay {
@@ -168,10 +179,10 @@
 }
 
 .modal-content {
-    background-color: #fff;
+    background-color: var(--card-bg);
     padding: 2rem 3rem;
-    border-radius: 10px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
     text-align: center;
     max-width: 500px;
     width: 90%;
@@ -210,7 +221,7 @@
         margin-right: -10px;
         padding-left: 10px;
         padding-right: 10px;
-        background: #fff;
+        background: rgba(255,255,255,0.95);
         border-bottom: 1px solid #dee2e6;
     }
 

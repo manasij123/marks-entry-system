@@ -1,17 +1,34 @@
-@import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Merriweather:wght@300;400;700;900&display=swap');
+
+:root {
+    --primary-color: #2c3e50; /* গাঢ় নীল - প্রাতিষ্ঠানিক */
+    --secondary-color: #34495e;
+    --accent-color: #e67e22; /* গোল্ডেন অরেঞ্জ - হাইলাইট */
+    --bg-color: #f4f6f8;
+    --card-bg: #ffffff;
+    --text-color: #2c3e50;
+    --border-radius: 12px;
+    --shadow: 0 8px 30px rgba(0,0,0,0.08);
+    --font-heading: 'Merriweather', serif;
+    --font-body: 'Hind Siliguri', sans-serif;
+}
 
 body {
-    font-family: 'Hind Siliguri', sans-serif;
-    background-color: #f0f2f5;
+    font-family: var(--font-body);
+    background-color: var(--bg-color);
+    color: var(--text-color);
     min-height: 100vh; /* Ensure body takes at least full viewport height */
     margin: 0;
+    background-image: radial-gradient(#e1e5ea 1px, transparent 1px); /* Subtle dot pattern */
+    background-size: 20px 20px;
 }
 
 .form-container {
-    background-color: #ffffff;
+    background-color: var(--card-bg);
     padding: 2rem 3rem;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    border-top: 5px solid var(--accent-color); /* স্কুলের নোটবুকের মতো ভাব */
     width: 100%;
     max-width: 400px;
     text-align: center;
@@ -19,8 +36,10 @@ body {
 }
 
 h2 {
-    color: #333;
+    font-family: var(--font-heading);
+    color: var(--primary-color);
     margin-bottom: 1.5rem;
+    font-weight: 700;
 }
 
 .input-group {
@@ -31,35 +50,49 @@ h2 {
 .input-group label {
     display: block;
     margin-bottom: 0.5rem;
-    color: #555;
+    color: var(--secondary-color);
     font-weight: 500;
+    font-size: 0.95rem;
 }
 
 .input-group input,
 .input-group select {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
     font-size: 1rem;
-    font-family: 'Hind Siliguri', sans-serif;
+    font-family: var(--font-body);
+    transition: all 0.3s ease;
+    background-color: #fafafa;
+}
+
+.input-group input:focus,
+.input-group select:focus {
+    border-color: var(--primary-color);
+    background-color: #fff;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.1);
 }
 
 .btn {
     width: 100%;
     padding: 12px;
     border: none;
-    border-radius: 5px;
-    background-color: #007bff;
+    border-radius: 8px;
+    background-color: var(--primary-color);
     color: white;
     font-size: 1.1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
 .btn:hover {
-    background-color: #0056b3;
+    background-color: var(--secondary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
 }
 
 .bottom-text {
@@ -68,7 +101,7 @@ h2 {
 }
 
 .bottom-text a {
-    color: #007bff;
+    color: var(--accent-color);
     text-decoration: none;
     font-weight: 600;
 }
@@ -86,11 +119,11 @@ h2 {
 }
 
 .popup-content {
-    background: white;
+    background: var(--card-bg);
     padding: 2rem;
-    border-radius: 8px;
+    border-radius: var(--border-radius);
     text-align: center;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    box-shadow: var(--shadow);
 }
 
 /* --- Responsive Design --- */
