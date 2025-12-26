@@ -193,6 +193,57 @@ app.get('/api/students/:year/:section', async (req, res) => {
 });
 
 /**
+ * API Endpoint: Update a single student's name
+ */
+app.put('/api/students/:year/:section/:roll', async (req, res) => {
+    const { year, section, roll } = req.params;
+    const { name } = req.body;
+    
+    try {
+        const studentsCollection = db.collection('students');
+        // Update the specific student in the array
+        const result = await studentsCollection.updateOne(
+            { year: parseInt(year), section: section, "students.roll": parseInt(roll) },
+            { $set: { "students.$.name": name } }
+        );
+        
+        if (result.modifiedCount > 0) {
+            res.json({ success: true, message: 'ছাত্রীর নাম আপডেট করা হয়েছে।' });
+        } else {
+            res.status(404).json({ success: false, message: 'ছাত্রী খুঁজে পাওয়া যায়নি বা নাম পরিবর্তন হয়নি।' });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'সার্ভারে ত্রুটি।' });
+    }
+});
+
+/**
+ * API Endpoint: Delete a single student
+ */
+app.delete('/api/students/:year/:section/:roll', async (req, res) => {
+    const { year, section, roll } = req.params;
+    
+    try {
+        const studentsCollection = db.collection('students');
+        // Remove the student from the array
+        const result = await studentsCollection.updateOne(
+            { year: parseInt(year), section: section },
+            { $pull: { students: { roll: parseInt(roll) } } }
+        );
+
+        if (result.modifiedCount > 0) {
+            res.json({ success: true, message: 'ছাত্রীকে সফলভাবে মুছে ফেলা হয়েছে।' });
+        } else {
+            res.status(404).json({ success: false, message: 'ছাত্রী খুঁজে পাওয়া যায়নি।' });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'সার্ভারে ত্রুটি।' });
+    }
+});
+
+/**
  * API Endpoint: Get all teachers
  */
 app.get('/api/teachers', async (req, res) => {

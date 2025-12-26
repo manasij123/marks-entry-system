@@ -122,9 +122,24 @@ async function viewStudentsBySection() {
         allStudentsHtml += `<h3>সেকশন: ${section}</h3>`;
         if (students.length > 0) {
             const table = `<table class="marks-table">
-                <thead><tr><th>রোল</th><th>ছাত্রীর নাম</th></tr></thead>
+                <thead>
+                    <tr>
+                        <th>রোল</th>
+                        <th>ছাত্রীর নাম</th>
+                        <th>কার্যকলাপ (Actions)</th>
+                    </tr>
+                </thead>
                 <tbody>
-                    ${students.map(s => `<tr><td>${s.roll}</td><td>${s.name}</td></tr>`).join('')}
+                    ${students.map(s => `
+                        <tr>
+                            <td>${s.roll}</td>
+                            <td>${s.name}</td>
+                            <td>
+                                <button class="btn-action btn-primary" onclick="editStudent('${year}', '${section}', ${s.roll}, '${s.name.replace(/'/g, "\\'")}')">Edit</button>
+                                <button class="btn-action btn-danger" onclick="deleteStudent('${year}', '${section}', ${s.roll})">Delete</button>
+                            </td>
+                        </tr>
+                    `).join('')}
                 </tbody>
             </table>`;
             allStudentsHtml += table;
@@ -577,4 +592,51 @@ function printSpecificSubject(subject, section, year, students, marksByStudent) 
     
     printWindow.document.write(html);
     printWindow.document.close();
+}
+
+/**
+ * Edits a student's name.
+ */
+async function editStudent(year, section, roll, currentName) {
+    const newName = prompt("ছাত্রীর নতুন নাম লিখুন:", currentName);
+    if (newName && newName.trim() !== "" && newName !== currentName) {
+        try {
+            const response = await fetch(`/api/students/${year}/${section}/${roll}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: newName.trim() })
+            });
+            const result = await response.json();
+            if (result.success) {
+                alert(result.message);
+                viewStudentsBySection(); // Refresh the list
+            } else {
+                alert(result.message);
+            }
+        } catch (error) {
+            console.error(error);
+            alert('আপডেট করতে সমস্যা হয়েছে।');
+        }
+    }
+}
+
+/**
+ * Deletes a student.
+ */
+async function deleteStudent(year, section, roll) {
+    if (confirm(`আপনি কি নিশ্চিত যে আপনি রোল ${roll}-এর ছাত্রীকে মুছে ফেলতে চান?`)) {
+        try {
+            const response = await fetch(`/api/students/${year}/${section}/${roll}`, {
+                method: 'DELETE'
+            });
+            const result = await response.json();
+            alert(result.message);
+            if (result.success) {
+                viewStudentsBySection(); // Refresh the list
+            }
+        } catch (error) {
+            console.error(error);
+            alert('মুছে ফেলতে সমস্যা হয়েছে।');
+        }
+    }
 }
