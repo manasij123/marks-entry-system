@@ -214,44 +214,46 @@ async function viewConsolidatedMarks() {
             <h2 class="text-xl font-bold text-slate-800">Consolidated Marksheet</h2>
             <p class="text-sm text-slate-500">Year: <span class="font-bold">${year}</span> | Section: <span class="font-bold">${section}</span></p>
         </div>
-        <div class="overflow-x-auto border border-slate-200 rounded-xl">
+        <div class="overflow-x-auto border border-slate-200 rounded-xl shadow-lg bg-white">
         <table class="w-full text-sm text-left border-collapse">
             <thead>
-                <tr class="bg-slate-100 text-slate-600 text-xs uppercase">
-                    <th class="border border-slate-200 px-4 py-2" rowspan="2">Roll</th>
-                    <th class="border border-slate-200 px-4 py-2" rowspan="2">Name</th>`;
+                <tr class="bg-slate-800 text-white text-xs uppercase tracking-wider">
+                    <th class="border border-slate-600 px-4 py-3 font-bold text-center sticky left-0 z-20 bg-slate-800 shadow-md" rowspan="3" style="width: 80px; min-width: 80px; max-width: 80px;">Roll</th>
+                    <th class="border border-slate-600 px-4 py-3 font-bold text-left sticky left-[80px] z-20 bg-slate-800 shadow-md" rowspan="3" style="min-width: 200px;">Name</th>`;
     subjects.forEach(sub => {
-        tableHTML += `<th class="border border-slate-200 px-2 py-2 text-center bg-indigo-50 text-indigo-700" colspan="6">${sub}</th>`;
+        tableHTML += `<th class="border border-slate-600 px-2 py-2 text-center bg-indigo-600 text-white font-bold" colspan="6">${sub}</th>`;
     });
-    tableHTML += `</tr><tr class="bg-slate-50 text-xs">`;
+    tableHTML += `</tr><tr class="bg-slate-100 text-slate-700 text-xs font-semibold">`;
     subjects.forEach(() => {
         evolutions.forEach(evo => {
-            tableHTML += `<th class="border border-slate-200 px-1 py-1 text-center" colspan="2">E${evo}</th>`;
+            tableHTML += `<th class="border border-slate-300 px-1 py-1 text-center bg-slate-200 text-slate-700" colspan="2">Eval ${evo}</th>`;
         });
     });
-    tableHTML += `</tr><tr class="bg-slate-50 text-[10px]"><th></th><th></th>`;
+    tableHTML += `</tr><tr class="bg-white text-[10px] text-slate-600">`;
      subjects.forEach(sub => {
         evolutions.forEach(evo => {
-            tableHTML += `<th class="border border-slate-200 px-1 py-1 text-center w-10">W</th><th class="border border-slate-200 px-1 py-1 text-center w-10">P</th>`;
+            tableHTML += `<th class="border border-slate-200 px-1 py-1 text-center w-12 bg-slate-50 font-bold text-slate-500">W</th><th class="border border-slate-200 px-1 py-1 text-center w-12 bg-white font-bold text-slate-500">P</th>`;
         });
     });
-    tableHTML += `</tr></thead><tbody class="divide-y divide-slate-100">`;
+    tableHTML += `</tr></thead><tbody class="divide-y divide-slate-200 bg-white">`;
 
     students.sort((a, b) => a.roll - b.roll).forEach(student => {
-        tableHTML += `<tr class="hover:bg-slate-50"><td class="border border-slate-200 px-4 py-2 font-mono text-center">${student.roll}</td><td class="border border-slate-200 px-4 py-2 font-semibold whitespace-nowrap">${student.name}</td>`;
+        tableHTML += `<tr class="hover:bg-indigo-50 transition-colors group">
+            <td class="border border-slate-200 px-4 py-2 font-mono text-center font-bold text-slate-700 sticky left-0 bg-white group-hover:bg-indigo-50 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]" style="width: 80px; min-width: 80px; max-width: 80px;">${student.roll}</td>
+            <td class="border border-slate-200 px-4 py-2 font-semibold whitespace-nowrap text-slate-800 sticky left-[80px] bg-white group-hover:bg-indigo-50 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">${student.name}</td>`;
         const studentMarks = marksByStudent[student.roll];
         subjects.forEach(sub => {
             evolutions.forEach(evo => {
                 const wVal = studentMarks[sub][evo].W;
                 const pVal = studentMarks[sub][evo].P;
                 
-                tableHTML += `<td class="border border-slate-200 px-1 py-2 text-center cursor-pointer hover:bg-yellow-50 transition-colors text-xs" 
+                tableHTML += `<td class="border border-slate-200 px-1 py-2 text-center cursor-pointer hover:bg-yellow-100 transition-colors text-xs font-medium ${wVal === '-' ? 'text-slate-300' : 'text-slate-700'}" 
                     data-year="${year}" data-section="${section}" 
                     data-subject="${sub}" data-evo="${evo}" 
                     data-roll="${student.roll}" data-type="W"
                     onclick="makeEditable(this)">${wVal}</td>`;
                     
-                tableHTML += `<td class="border border-slate-200 px-1 py-2 text-center cursor-pointer hover:bg-yellow-50 transition-colors text-xs" 
+                tableHTML += `<td class="border border-slate-200 px-1 py-2 text-center cursor-pointer hover:bg-yellow-100 transition-colors text-xs font-medium bg-slate-50/30 ${pVal === '-' ? 'text-slate-300' : 'text-slate-700'}" 
                     data-year="${year}" data-section="${section}" 
                     data-subject="${sub}" data-evo="${evo}" 
                     data-roll="${student.roll}" data-type="P"
@@ -264,15 +266,17 @@ async function viewConsolidatedMarks() {
     tableHTML += '</tbody></table></div>';
 
     // Add Footer with Print Buttons
-    tableHTML += '<tfoot><tr><td colspan="2" style="text-align:right; font-weight:bold;">Print Subject:</td>';
+    tableHTML += '<div class="mt-4 overflow-x-auto"><table class="w-full text-sm border-collapse"><tfoot><tr><td colspan="2" class="px-4 py-4 text-right font-bold text-slate-700">Print Subject:</td>';
     subjects.forEach(sub => {
         // Create a safe ID for the button
         const safeSub = sub.replace(/[^a-zA-Z0-9]/g, '_');
-        tableHTML += `<td colspan="6" style="text-align:center;">
-            <button id="print-btn-${safeSub}" class="btn-action btn-primary" style="font-size: 0.8rem; padding: 2px 8px;">🖨️ Print</button>
+        tableHTML += `<td colspan="6" class="px-2 py-3 text-center">
+            <button id="print-btn-${safeSub}" class="inline-flex items-center justify-center gap-2 bg-white border border-indigo-200 text-indigo-600 hover:bg-indigo-600 hover:text-white px-4 py-2 rounded-full text-xs font-bold transition-all shadow-sm hover:shadow-md w-full max-w-[120px]">
+                <span>🖨️</span> Print
+            </button>
         </td>`;
     });
-    tableHTML += '</tr></tfoot></table>';
+    tableHTML += '</tr></tfoot></table></div>';
 
     displayDiv.innerHTML = tableHTML;
 

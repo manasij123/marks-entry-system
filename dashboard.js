@@ -81,6 +81,7 @@ function displayMarksTable(students, marksheet, sheetInfo) {
     students.sort((a, b) => a.roll - b.roll).forEach(student => {
         const marks = marksheet.data ? (marksheet.data[student.roll] || {}) : {};
         const row = tableBody.insertRow();
+        row.className = "hover:bg-slate-50 transition-colors";
         row.innerHTML = `
             <td class="px-6 py-4 text-center font-mono text-slate-500">${student.roll}</td>
             <td class="px-6 py-4 font-semibold text-slate-700">${student.name}</td>

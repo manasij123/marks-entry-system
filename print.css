@@ -23,11 +23,13 @@
     }
 
     /* Ensure table styles are print-friendly */
-    .marks-table {
+    #consolidated-marks-display table {
         font-size: 10pt;
+        width: 100%;
+        border-collapse: collapse;
     }
 
-    .marks-table th, .marks-table td {
+    #consolidated-marks-display table th, #consolidated-marks-display table td {
         border: 1px solid #000 !important; /* Ensure borders are black for printing */
     }
 }

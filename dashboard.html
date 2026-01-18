@@ -3,115 +3,266 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ড্যাশবোর্ড - মার্কস এন্ট্রি</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="dashboard.css">
+    <title>Marks Entry Dashboard</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* Status Badges */
+        .status-badge { padding: 4px 12px; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+        .status-badge.draft { background-color: #f3f4f6; color: #4b5563; border: 1px solid #e5e7eb; }
+        .status-badge.submitted { background-color: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+        .status-badge.pending { background-color: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+
+        /* Toast Notification */
+        #toast-notification {
+            visibility: hidden;
+            min-width: 300px;
+            background-color: #1e293b;
+            color: #fff;
+            text-align: center;
+            border-radius: 12px;
+            padding: 16px;
+            position: fixed;
+            z-index: 100;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%) translateY(20px);
+            font-size: 15px;
+            font-weight: 500;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        #toast-notification.show {
+            visibility: visible;
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+            bottom: 50px;
+        }
+        #toast-notification.success { background-color: #10b981; }
+        #toast-notification.error { background-color: #ef4444; }
+    </style>
 </head>
-<body>
-    <header class="header">
-        <div class="logo">
-            <h3>মার্কস ম্যানেজমেন্ট সিস্টেম</h3>
-        </div>
-        <div class="user-menu">
-            <span id="userFullName"></span>
-            <div class="dropdown">
-                <button class="dropbtn">👤</button>
-                <div class="dropdown-content">
-                    <div class="user-info">
-                        <p><strong>নাম:</strong> <span id="menuUserFullName"></span></p>
-                        <p><strong>বিষয়:</strong> <span id="menuUserSubject"></span></p>
-                        <p><strong>আইডি:</strong> <span id="menuUserId"></span></p>
-                    </div>
-                    <a href="#" onclick="logout()">লগআউট</a>
+<body class="text-slate-800">
+    <div class="flex h-screen overflow-hidden">
+        
+        <!-- Sidebar -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-72 bg-[#0000FF] text-white transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col shadow-2xl">
+            <div class="p-6 border-b border-white/10 flex justify-between items-center shadow-xl z-10 relative">
+                <div>
+                    <h1 class="text-2xl font-bold text-white">Banglar Shiksha</h1>
+                    <p class="text-xs text-white/80 mt-1 font-medium tracking-wide">MARKS ENTRY PORTAL</p>
                 </div>
-            </div>
-            <!-- Notification Bell -->
-            <div class="dropdown">
-                <button id="notificationBtn" class="dropbtn notification-btn">
-                    🔔
-                    <span id="notification-badge" class="badge" style="display: none;"></span>
+                <button id="closeSidebar" class="md:hidden text-white hover:bg-white/10 p-1 rounded-lg transition-colors">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
                 </button>
-                <div id="notification-dropdown" class="dropdown-content">
-                    <!-- Notifications will be loaded here -->
+            </div>
+            
+            <div class="p-4 space-y-3 flex-1 overflow-y-auto">
+                <!-- User Info Card in Sidebar -->
+                <div class="bg-white/10 rounded-xl p-4 mb-6 backdrop-blur-sm border border-white/10">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 bg-white text-blue-600 rounded-full flex items-center justify-center font-bold text-lg shadow-sm">
+                            <span id="menuUserInitial">U</span>
+                        </div>
+                        <div class="overflow-hidden">
+                            <p class="font-bold text-sm truncate" id="menuUserFullName">User Name</p>
+                            <p class="text-[10px] text-blue-200 font-mono" id="menuUserId">ID: ...</p>
+                        </div>
+                    </div>
+                    <div class="text-xs bg-blue-600/50 rounded-lg px-3 py-1.5 inline-block border border-blue-400/30 font-medium">
+                        Subject: <span id="menuUserSubject" class="font-bold text-white">...</span>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </header>
 
-    <main class="container">
-        <div id="warning-message" class="warning" style="display: none;"></div>
+                <!-- Navigation -->
+                <nav class="space-y-2">
+                    <a href="#" class="flex items-center gap-3 px-4 py-3.5 bg-blue-400 text-white rounded-xl font-medium shadow-lg transition-all">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                        Dashboard
+                    </a>
+                    <button onclick="logout()" class="w-full flex items-center gap-3 px-4 py-3.5 text-blue-100 hover:bg-white/10 hover:text-white rounded-xl font-medium transition-all group">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" class="group-hover:-translate-x-1 transition-transform"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                        Logout
+                    </button>
+                </nav>
+            </div>
+            
+            <!-- Footer Info -->
+            <div class="p-4 border-t border-white/10 text-center text-xs text-blue-200/60">
+                &copy; 2026 Student Data Tool
+            </div>
+        </aside>
 
-        <div class="controls-container">
-            <div class="control-group">
-                <label for="section">সেকশন নির্বাচন করুন:</label>
-                <select id="section">
-                    <option value="" disabled selected>-- সেকশন --</option>
-                    <option value="C">Section C</option>
-                    <option value="D">Section D</option>
-                </select>
-            </div>
-            <div class="control-group">
-                <label for="evolution">ইভ্যালুয়েশন নির্বাচন করুন:</label>
-                <select id="evolution">
-                    <option value="" disabled selected>-- ইভ্যালুয়েশন --</option>
-                    <option value="1">Evolution 1</option>
-                    <option value="2">Evolution 2</option>
-                    <option value="3">Evolution 3</option>
-                </select>
-            </div>
-            <div class="mobile-btn-group">
-                <button id="loadStudentsBtn" class="btn">ছাত্রীদের তালিকা দেখুন</button>
-                <button id="mobileTabBtn" class="btn btn-secondary" style="display: none;">Tab ↹</button>
-            </div>
-        </div>
-
-        <div id="marks-entry-table-container" style="display: none;">
-            <div class="marks-header-status">
-                <h2 id="table-header"></h2>
-                <div id="marks-status-display" class="status-badge" style="display: none;"></div>
-            </div>
-            <form id="marksForm">
-                <div class="table-wrapper"> <!-- Added wrapper for scrolling -->
-                    <table class="marks-table">
-                        <thead>
-                            <tr>
-                                <th>রোল</th>
-                                <th>ছাত্রীর নাম</th>
-                                <th id="written-header">Written (W)</th>
-                                <th id="practical-header">Practical (P)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="students-list-body">
-                            <!-- ছাত্রীদের তালিকা এখানে জাভাস্ক্রিপ্ট দিয়ে যোগ করা হবে -->
-                        </tbody>
-                    </table>
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col h-full overflow-hidden bg-slate-50/50">
+            
+            <!-- Header -->
+            <header class="bg-white/80 backdrop-blur-md border-b border-slate-200 h-20 flex items-center justify-between px-6 md:px-8 sticky top-0 z-40 shadow-sm">
+                <button id="openSidebar" class="md:hidden text-slate-500 hover:text-indigo-600 transition-colors">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </button>
+                
+                <div class="flex-1 text-center md:text-left md:pl-4">
+                    <h2 class="text-xl font-bold text-slate-800 tracking-tight">Marks Entry Dashboard</h2>
                 </div>
-            </form>
+
+                <div class="flex items-center gap-4">
+                    <div class="text-right hidden md:block">
+                        <p class="text-sm font-bold text-slate-700" id="userFullName">User</p>
+                        <p class="text-xs text-slate-500 font-medium">Teacher Account</p>
+                    </div>
+                    <div class="w-10 h-10 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-full flex items-center justify-center text-white font-bold shadow-md ring-2 ring-white">
+                        T
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content Body -->
+            <main class="flex-1 overflow-auto p-4 md:p-8 pb-28">
+                <div class="max-w-6xl mx-auto space-y-8">
+                    
+                    <!-- Selection Card -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-bl-full -mr-10 -mt-10 z-0"></div>
+                        
+                        <h3 class="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2 relative z-10">
+                            <span class="p-2 bg-indigo-50 text-indigo-600 rounded-lg"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span>
+                            Select Criteria
+                        </h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-end relative z-10">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-2 tracking-wider">Section</label>
+                                <div class="relative">
+                                    <select id="section" class="w-full p-3 pl-4 pr-10 border border-slate-200 rounded-xl bg-slate-50 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all appearance-none cursor-pointer font-medium text-slate-700">
+                                        <option value="">-- Select Section --</option>
+                                        <option value="C">Section C</option>
+                                        <option value="D">Section D</option>
+                                    </select>
+                                    <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-2 tracking-wider">Evaluation</label>
+                                <div class="relative">
+                                    <select id="evolution" class="w-full p-3 pl-4 pr-10 border border-slate-200 rounded-xl bg-slate-50 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all appearance-none cursor-pointer font-medium text-slate-700">
+                                        <option value="">-- Select Evaluation --</option>
+                                        <option value="1">Evaluation 1</option>
+                                        <option value="2">Evaluation 2</option>
+                                        <option value="3">Evaluation 3</option>
+                                    </select>
+                                    <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+                                    </div>
+                                </div>
+                            </div>
+                            <button id="loadStudentsBtn" class="w-full py-3 bg-gradient-to-r from-indigo-600 to-violet-600 text-white rounded-xl font-bold hover:shadow-lg hover:shadow-indigo-500/30 hover:-translate-y-0.5 transition-all active:scale-95 flex items-center justify-center gap-2">
+                                Load Students <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Marks Table Container -->
+                    <div id="marks-entry-table-container" class="hidden bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex flex-col animate-fade-in">
+                        <div class="p-6 border-b border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4 bg-slate-50/50">
+                            <div>
+                                <h3 id="table-header" class="text-lg font-bold text-slate-800">Marks Entry</h3>
+                                <span id="marks-status-display" class="status-badge draft mt-2 inline-block">Status: Draft</span>
+                            </div>
+                            <div class="action-buttons flex flex-wrap justify-center gap-3">
+                                <button id="saveDraftBtn" class="px-5 py-2.5 bg-white border border-slate-300 text-slate-700 rounded-xl font-semibold hover:bg-slate-50 hover:border-slate-400 transition-all shadow-sm">
+                                    Save Draft
+                                </button>
+                                <button id="submitBtn" class="px-5 py-2.5 bg-emerald-600 text-white rounded-xl font-semibold hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-100 hover:-translate-y-0.5">
+                                    Final Submit
+                                </button>
+                                <button id="unlockBtn" class="hidden px-5 py-2.5 bg-yellow-500 text-white rounded-xl font-semibold hover:bg-yellow-600 transition-all shadow-lg shadow-yellow-100">
+                                    Request Unlock
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-left">
+                                <thead class="bg-slate-100 text-slate-600 font-bold uppercase text-xs tracking-wider border-b border-slate-200">
+                                    <tr>
+                                        <th class="px-6 py-4 w-24 text-center">Roll No</th>
+                                        <th class="px-6 py-4">Student Name</th>
+                                        <th class="px-6 py-4 w-40 text-center">Written (40)</th>
+                                        <th class="px-6 py-4 w-40 text-center">Practical (10)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="students-list-body" class="divide-y divide-slate-100">
+                                    <!-- Rows will be injected here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </main>
+            
+            <!-- Mobile Tab Button (Floating) -->
+            <button id="mobileTabBtn" class="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-indigo-600 text-white rounded-full shadow-xl shadow-indigo-500/40 flex items-center justify-center z-50 active:scale-90 transition-transform hover:bg-indigo-700">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 5l7 7-7 7M5 12h14"/></svg>
+            </button>
         </div>
-        <div class="action-buttons" style="display: none;">
-            <button type="button" id="saveDraftBtn" class="btn btn-secondary">খসড়া সেভ করুন (Save Draft)</button>
-            <button type="button" id="submitBtn" class="btn">মার্কস জমা দিন (Submit)</button>
-            <button type="button" id="unlockBtn" class="btn btn-warning" style="display: none;">Request Unlock</button>
-        </div>
-    </main>
+    </div>
 
     <!-- Confirmation Modal -->
-    <div id="confirmation-modal" class="modal-overlay" style="display: none;">
-        <div class="modal-content">
-            <span class="modal-close-btn">&times;</span>
-            <h2 id="modal-title">আপনি কি নিশ্চিত?</h2>
-            <p id="modal-message">আপনি একবার মার্কস জমা দিলে, এটি আর সম্পাদনা করতে পারবেন না। আনলক করার জন্য অ্যাডমিনের কাছে অনুরোধ করতে হবে।</p>
-            <div class="modal-actions">
-                <button id="modal-cancel-btn" class="btn btn-secondary">ফিরে যান</button>
-                <button id="modal-confirm-btn" class="btn">নিশ্চিত করুন</button>
+    <div id="confirmation-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 transition-opacity">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-8 transform transition-all scale-100 border-t-4 border-indigo-500">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
+                    <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                </div>
+                <h3 class="text-xl font-bold text-slate-800 mb-2">Confirm Submission?</h3>
+                <p class="text-slate-500 text-sm leading-relaxed">Once submitted, you cannot edit marks without admin approval. Are you sure you want to proceed?</p>
+            </div>
+            <div class="flex gap-3">
+                <button id="modal-cancel-btn" class="flex-1 py-3 border border-slate-200 rounded-xl font-semibold text-slate-600 hover:bg-slate-50 transition-colors modal-close-btn">Cancel</button>
+                <button id="modal-confirm-btn" class="flex-1 py-3 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200 hover:-translate-y-0.5">Yes, Submit</button>
             </div>
         </div>
     </div>
 
     <!-- Toast Notification -->
-    <div id="toast-notification"></div>
+    <div id="toast-notification">Notification Message</div>
 
+    <!-- Scripts -->
     <script src="auth.js"></script>
     <script src="dashboard.js"></script>
+    <script>
+        // Sidebar Toggle Logic
+        const sidebar = document.getElementById('sidebar');
+        const openBtn = document.getElementById('openSidebar');
+        const closeBtn = document.getElementById('closeSidebar');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('-translate-x-full');
+        }
+
+        if(openBtn) openBtn.addEventListener('click', toggleSidebar);
+        if(closeBtn) closeBtn.addEventListener('click', toggleSidebar);
+
+        // Set User Initial
+        const user = JSON.parse(sessionStorage.getItem('loggedInUser'));
+        if(user && user.fullName) {
+            document.getElementById('menuUserInitial').textContent = user.fullName.charAt(0).toUpperCase();
+        }
+    </script>
 </body>
 </html>
