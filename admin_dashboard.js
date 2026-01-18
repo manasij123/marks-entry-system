@@ -57,15 +57,16 @@ async function loadTeachers() {
     let count = 1;
     teachers.forEach(teacher => {
         const row = teachersListBody.insertRow();
+        row.className = "hover:bg-slate-50 transition-colors";
         row.innerHTML = `
-            <td>${count++}</td>
-            <td>${teacher.fullName}</td>
-            <td>${teacher.subject}</td>
-            <td>${teacher.uniqueId || teacher._id}</td>
-            <td>${teacher.password}</td> <!-- This will now show the plain password -->
-            <td>
-                <button class="btn-action btn-primary" onclick="resetPassword('${teacher._id}')">Reset</button>
-                <button class="btn-action btn-danger" onclick="deleteTeacher('${teacher._id}')">Delete</button>
+            <td class="px-6 py-4 font-mono text-slate-500">${count++}</td>
+            <td class="px-6 py-4 font-semibold text-slate-700">${teacher.fullName}</td>
+            <td class="px-6 py-4"><span class="bg-indigo-50 text-indigo-700 px-2 py-1 rounded text-xs font-bold">${teacher.subject}</span></td>
+            <td class="px-6 py-4 font-mono text-xs">${teacher.uniqueId || teacher._id}</td>
+            <td class="px-6 py-4 font-mono text-xs text-slate-400">${teacher.password}</td>
+            <td class="px-6 py-4 text-center">
+                <button class="text-indigo-600 hover:text-indigo-800 font-medium text-xs mr-3" onclick="resetPassword('${teacher._id}')">Reset</button>
+                <button class="text-red-500 hover:text-red-700 font-medium text-xs" onclick="deleteTeacher('${teacher._id}')">Delete</button>
             </td>
         `;
     });
@@ -121,27 +122,27 @@ async function viewStudentsBySection() {
         
         allStudentsHtml += `<h3>সেকশন: ${section}</h3>`;
         if (students.length > 0) {
-            const table = `<table class="marks-table">
-                <thead>
+            const table = `<div class="overflow-x-auto mb-8 bg-white rounded-xl border border-slate-200"><table class="w-full text-sm text-left">
+                <thead class="bg-slate-50 text-slate-600 font-bold uppercase text-xs border-b border-slate-200">
                     <tr>
-                        <th>রোল</th>
-                        <th>ছাত্রীর নাম</th>
-                        <th>কার্যকলাপ (Actions)</th>
+                        <th class="px-6 py-3">Roll</th>
+                        <th class="px-6 py-3">Name</th>
+                        <th class="px-6 py-3 text-center">Actions</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="divide-y divide-slate-100">
                     ${students.map(s => `
-                        <tr>
-                            <td>${s.roll}</td>
-                            <td>${s.name}</td>
-                            <td>
-                                <button class="btn-action btn-primary" onclick="editStudent('${year}', '${section}', ${s.roll}, '${s.name.replace(/'/g, "\\'")}')">Edit</button>
-                                <button class="btn-action btn-danger" onclick="deleteStudent('${year}', '${section}', ${s.roll})">Delete</button>
+                        <tr class="hover:bg-slate-50">
+                            <td class="px-6 py-3 font-mono text-slate-500">${s.roll}</td>
+                            <td class="px-6 py-3 font-semibold text-slate-700">${s.name}</td>
+                            <td class="px-6 py-3 text-center">
+                                <button class="text-indigo-600 hover:text-indigo-800 font-medium text-xs mr-3" onclick="editStudent('${year}', '${section}', ${s.roll}, '${s.name.replace(/'/g, "\\'")}')">Edit</button>
+                                <button class="text-red-500 hover:text-red-700 font-medium text-xs" onclick="deleteStudent('${year}', '${section}', ${s.roll})">Delete</button>
                             </td>
                         </tr>
                     `).join('')}
                 </tbody>
-            </table>`;
+            </table></div>`;
             allStudentsHtml += table;
         } else {
             allStudentsHtml += '<p>এই সেকশনে কোনো ছাত্রী পাওয়া যায়নি।</p>';
@@ -209,47 +210,48 @@ async function viewConsolidatedMarks() {
 
     // Generate HTML table
     let tableHTML = `
-        <div style="text-align: center; margin-bottom: 1rem;">
-            <h2>Consolidated Marksheet</h2>
-            <p><strong>Year:</strong> ${year} | <strong>Section:</strong> ${section}</p>
+        <div class="text-center mb-6">
+            <h2 class="text-xl font-bold text-slate-800">Consolidated Marksheet</h2>
+            <p class="text-sm text-slate-500">Year: <span class="font-bold">${year}</span> | Section: <span class="font-bold">${section}</span></p>
         </div>
-        <table class="marks-table">
+        <div class="overflow-x-auto border border-slate-200 rounded-xl">
+        <table class="w-full text-sm text-left border-collapse">
             <thead>
-                <tr>
-                    <th rowspan="2">রোল</th>
-                    <th rowspan="2">ছাত্রীর নাম</th>`;
+                <tr class="bg-slate-100 text-slate-600 text-xs uppercase">
+                    <th class="border border-slate-200 px-4 py-2" rowspan="2">Roll</th>
+                    <th class="border border-slate-200 px-4 py-2" rowspan="2">Name</th>`;
     subjects.forEach(sub => {
-        tableHTML += `<th colspan="6">${sub}</th>`;
+        tableHTML += `<th class="border border-slate-200 px-2 py-2 text-center bg-indigo-50 text-indigo-700" colspan="6">${sub}</th>`;
     });
-    tableHTML += `</tr><tr>`;
+    tableHTML += `</tr><tr class="bg-slate-50 text-xs">`;
     subjects.forEach(() => {
         evolutions.forEach(evo => {
-            tableHTML += `<th colspan="2">Evo ${evo}</th>`;
+            tableHTML += `<th class="border border-slate-200 px-1 py-1 text-center" colspan="2">E${evo}</th>`;
         });
     });
-    tableHTML += `</tr><tr><th></th><th></th>`;
+    tableHTML += `</tr><tr class="bg-slate-50 text-[10px]"><th></th><th></th>`;
      subjects.forEach(sub => {
         evolutions.forEach(evo => {
-            tableHTML += `<th>W</th><th>P</th>`;
+            tableHTML += `<th class="border border-slate-200 px-1 py-1 text-center w-10">W</th><th class="border border-slate-200 px-1 py-1 text-center w-10">P</th>`;
         });
     });
-    tableHTML += `</tr></thead><tbody>`;
+    tableHTML += `</tr></thead><tbody class="divide-y divide-slate-100">`;
 
     students.sort((a, b) => a.roll - b.roll).forEach(student => {
-        tableHTML += `<tr><td>${student.roll}</td><td>${student.name}</td>`;
+        tableHTML += `<tr class="hover:bg-slate-50"><td class="border border-slate-200 px-4 py-2 font-mono text-center">${student.roll}</td><td class="border border-slate-200 px-4 py-2 font-semibold whitespace-nowrap">${student.name}</td>`;
         const studentMarks = marksByStudent[student.roll];
         subjects.forEach(sub => {
             evolutions.forEach(evo => {
                 const wVal = studentMarks[sub][evo].W;
                 const pVal = studentMarks[sub][evo].P;
                 
-                tableHTML += `<td class="editable-mark" 
+                tableHTML += `<td class="border border-slate-200 px-1 py-2 text-center cursor-pointer hover:bg-yellow-50 transition-colors text-xs" 
                     data-year="${year}" data-section="${section}" 
                     data-subject="${sub}" data-evo="${evo}" 
                     data-roll="${student.roll}" data-type="W"
                     onclick="makeEditable(this)">${wVal}</td>`;
                     
-                tableHTML += `<td class="editable-mark" 
+                tableHTML += `<td class="border border-slate-200 px-1 py-2 text-center cursor-pointer hover:bg-yellow-50 transition-colors text-xs" 
                     data-year="${year}" data-section="${section}" 
                     data-subject="${sub}" data-evo="${evo}" 
                     data-roll="${student.roll}" data-type="P"
@@ -259,7 +261,7 @@ async function viewConsolidatedMarks() {
         tableHTML += `</tr>`;
     });
 
-    tableHTML += '</tbody>';
+    tableHTML += '</tbody></table></div>';
 
     // Add Footer with Print Buttons
     tableHTML += '<tfoot><tr><td colspan="2" style="text-align:right; font-weight:bold;">Print Subject:</td>';
@@ -428,15 +430,16 @@ async function loadUnlockRequests() {
 
     pendingRequests.forEach(req => {
         const row = requestsBody.insertRow();
+        row.className = "hover:bg-slate-50";
         row.innerHTML = `
-            <td>${req.teacherName}</td>
-            <td>${req.subject}</td>
-            <td>${req.year}</td>
-            <td>${req.section}</td>
-            <td>${req.evolution}</td>
-            <td>
-                <button class="btn-action btn-success" onclick="approveRequest('${req.id}')">Approve</button>
-                <button class="btn-action btn-danger" onclick="deleteRequest('${req.id}')">Deny</button>
+            <td class="px-6 py-4 font-semibold text-slate-700">${req.teacherName}</td>
+            <td class="px-6 py-4"><span class="bg-indigo-50 text-indigo-700 px-2 py-1 rounded text-xs font-bold">${req.subject}</span></td>
+            <td class="px-6 py-4 text-slate-500">${req.year}</td>
+            <td class="px-6 py-4 text-slate-500">${req.section}</td>
+            <td class="px-6 py-4 text-slate-500">${req.evolution}</td>
+            <td class="px-6 py-4 text-center">
+                <button class="text-emerald-600 hover:text-emerald-800 font-bold text-xs mr-3" onclick="approveRequest('${req.id}')">Approve</button>
+                <button class="text-red-500 hover:text-red-700 font-bold text-xs" onclick="deleteRequest('${req.id}')">Deny</button>
             </td>
         `;
     });

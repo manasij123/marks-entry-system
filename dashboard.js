@@ -82,10 +82,10 @@ function displayMarksTable(students, marksheet, sheetInfo) {
         const marks = marksheet.data ? (marksheet.data[student.roll] || {}) : {};
         const row = tableBody.insertRow();
         row.innerHTML = `
-            <td>${student.roll}</td>
-            <td>${student.name}</td>
-            <td><input type="number" class="mark-input" data-roll="${student.roll}" data-type="written" value="${marks.written || ''}" min="0" max="40"></td>
-            <td><input type="number" class="mark-input" data-roll="${student.roll}" data-type="practical" value="${marks.practical || ''}" min="0" max="10"></td>
+            <td class="px-6 py-4 text-center font-mono text-slate-500">${student.roll}</td>
+            <td class="px-6 py-4 font-semibold text-slate-700">${student.name}</td>
+            <td class="px-6 py-4 text-center"><input type="number" class="mark-input w-24 p-2 border border-slate-200 rounded-lg text-center focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all font-bold text-slate-700" data-roll="${student.roll}" data-type="written" value="${marks.written || ''}" min="0" max="40" placeholder="-"></td>
+            <td class="px-6 py-4 text-center"><input type="number" class="mark-input w-24 p-2 border border-slate-200 rounded-lg text-center focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all font-bold text-slate-700" data-roll="${student.roll}" data-type="practical" value="${marks.practical || ''}" min="0" max="10" placeholder="-"></td>
         `;
     });
 

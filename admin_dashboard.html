@@ -1,157 +1,244 @@
+<!-- c:\Users\manas\OneDrive\Desktop\websites\Students marks entry\admin_dashboard.html -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>অ্যাডমিন ড্যাশবোর্ড</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="dashboard.css"> <!-- Reusing dashboard styles -->
-    <link rel="stylesheet" href="admin_dashboard.css"> <!-- Admin specific styles -->
-    <link rel="stylesheet" href="print.css" media="print"> <!-- Styles for printing -->
+    <title>Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .animate-fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
 </head>
-<body>
-    <header class="header">
-        <div class="logo">
-            <h3>অ্যাডমিন ড্যাশবোর্ড</h3>
-        </div>
-        <div class="user-menu">
-            <span id="userFullName">অ্যাডমিন</span>
-            <div class="dropdown">
-                <button class="dropbtn">⚙️</button>
-                <div class="dropdown-content">
-                    <a href="#" onclick="logout()">লগআউট</a>
+<body class="text-slate-800">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-72 bg-[#0000FF] text-white transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col shadow-2xl">
+            <div class="p-6 border-b border-white/10 flex justify-between items-center shadow-xl z-10 relative">
+                <div>
+                    <h1 class="text-2xl font-bold text-white">Banglar Shiksha</h1>
+                    <p class="text-xs text-white/80 mt-1 font-medium tracking-wide">ADMIN PORTAL</p>
+                </div>
+                <button id="closeSidebar" class="md:hidden text-white hover:bg-white/10 p-1 rounded-lg transition-colors">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                </button>
+            </div>
+            
+            <div class="p-4 space-y-2 flex-1 overflow-y-auto">
+                <button onclick="openTab(event, 'TeachersDetails')" class="tab-link w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all text-white hover:bg-white/10 active-tab-bg bg-blue-400 shadow-lg">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    Teachers List
+                </button>
+                <button onclick="openTab(event, 'AddStudents')" class="tab-link w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all text-blue-100 hover:bg-white/10 hover:text-white">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+                    Add Students
+                </button>
+                <button onclick="openTab(event, 'ViewStudents')" class="tab-link w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all text-blue-100 hover:bg-white/10 hover:text-white">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    View Students
+                </button>
+                <button onclick="openTab(event, 'ViewAllMarks')" class="tab-link w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all text-blue-100 hover:bg-white/10 hover:text-white">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                    All Marks
+                </button>
+                <button onclick="openTab(event, 'UnlockRequests')" class="tab-link w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all text-blue-100 hover:bg-white/10 hover:text-white relative">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    Unlock Requests
+                    <span id="request-count-badge" class="absolute right-4 top-1/2 -translate-y-1/2 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden">0</span>
+                </button>
+                
+                <div class="pt-4 mt-4 border-t border-white/10">
+                    <button onclick="logout()" class="w-full flex items-center gap-3 px-4 py-3.5 text-blue-100 hover:bg-white/10 hover:text-white rounded-xl font-medium transition-all group">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" class="group-hover:-translate-x-1 transition-transform"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                        Logout
+                    </button>
                 </div>
             </div>
-        </div>
-    </header>
+        </aside>
 
-    <main class="container">
-        <!-- Tab navigation -->
-        <div class="tab-nav">
-            <button class="tab-link active" onclick="openTab(event, 'TeachersDetails')">শিক্ষিকাদের তালিকা</button>
-            <button class="tab-link" onclick="openTab(event, 'AddStudents')">ছাত্রী যোগ করুন</button>
-            <button class="tab-link" onclick="openTab(event, 'ViewStudents')">ছাত্রীর তালিকা দেখুন</button>
-            <button class="tab-link" onclick="openTab(event, 'ViewAllMarks')">সকল নম্বর দেখুন</button>
-            <button class="tab-link" onclick="openTab(event, 'UnlockRequests')">আনলক অনুরোধ <span id="request-count-badge" class="badge" style="display:none;"></span></button>
-        </div>
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col h-full overflow-hidden bg-slate-50/50">
+            <!-- Header -->
+            <header class="bg-white/80 backdrop-blur-md border-b border-slate-200 h-20 flex items-center justify-between px-6 md:px-8 sticky top-0 z-40 shadow-sm">
+                <button id="openSidebar" class="md:hidden text-slate-500 hover:text-indigo-600 transition-colors">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </button>
+                <div class="flex-1 text-center md:text-left md:pl-4">
+                    <h2 class="text-xl font-bold text-slate-800 tracking-tight">Admin Dashboard</h2>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="text-right hidden md:block">
+                        <p class="text-sm font-bold text-slate-700" id="userFullName">Admin</p>
+                        <p class="text-xs text-slate-500 font-medium">Administrator</p>
+                    </div>
+                    <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold shadow-md ring-2 ring-white">
+                        A
+                    </div>
+                </div>
+            </header>
 
-        <!-- Tab 1: Teachers Details -->
-        <div id="TeachersDetails" class="tab-content" style="display: block;">
-            <div class="content-wrapper">
-                <h2>নিবন্ধিত শিক্ষিকাদের তালিকা</h2>
-                <hr>
-                <table class="marks-table">
-                    <thead>
-                        <tr>
-                            <th>ক্রমিক নং</th>
-                            <th>শিক্ষিকার নাম</th>
-                            <th>বিষয়</th>
-                            <th>ইউনিক আইডি</th>
-                            <th>পাসওয়ার্ড</th>
-                        <th>কার্যকলাপ (Actions)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="teachers-list-body">
-                        <!-- শিক্ষিকাদের তালিকা এখানে জাভাস্ক্রিপ্ট দিয়ে যোগ করা হবে -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Tab 2: Add Students -->
-        <div id="AddStudents" class="tab-content">
-            <div class="content-wrapper">
-                <h2>নতুন ছাত্রী যোগ করুন</h2>
-                <hr>
-                <form id="studentAddForm" class="student-form">
-                    <div class="form-row">
-                        <div class="control-group">
-                            <label for="year">শিক্ষাবর্ষ নির্বাচন করুন</label>
-                            <select id="year" required></select>
+            <!-- Content Body -->
+            <main class="flex-1 overflow-auto p-4 md:p-8 pb-28">
+                <div class="max-w-7xl mx-auto space-y-8">
+                    
+                    <!-- Tab 1: Teachers Details -->
+                    <div id="TeachersDetails" class="tab-content block animate-fade-in">
+                        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                            <div class="p-6 border-b border-slate-100">
+                                <h3 class="text-lg font-bold text-slate-800">Registered Teachers</h3>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-sm text-left">
+                                    <thead class="bg-slate-100 text-slate-600 font-bold uppercase text-xs tracking-wider border-b border-slate-200">
+                                        <tr>
+                                            <th class="px-6 py-4">Sl No.</th>
+                                            <th class="px-6 py-4">Name</th>
+                                            <th class="px-6 py-4">Subject</th>
+                                            <th class="px-6 py-4">Unique ID</th>
+                                            <th class="px-6 py-4">Password</th>
+                                            <th class="px-6 py-4 text-center">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="teachers-list-body" class="divide-y divide-slate-100"></tbody>
+                                </table>
+                            </div>
                         </div>
-                        <div class="control-group">
-                            <label for="section">সেকশন নির্বাচন করুন</label>
-                            <select id="section" required>
-                                <option value="C">Section C</option>
-                                <option value="D">Section D</option>
-                            </select>
+                    </div>
+
+                    <!-- Tab 2: Add Students -->
+                    <div id="AddStudents" class="tab-content hidden animate-fade-in">
+                        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+                            <h3 class="text-lg font-bold text-slate-800 mb-6">Add New Students</h3>
+                            <form id="studentAddForm" class="space-y-6">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Academic Year</label>
+                                        <select id="year" required class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 focus:ring-2 focus:ring-indigo-500 outline-none"></select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Section</label>
+                                        <select id="section" required class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 focus:ring-2 focus:ring-indigo-500 outline-none">
+                                            <option value="C">Section C</option>
+                                            <option value="D">Section D</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Student Names (Comma Separated)</label>
+                                    <textarea id="studentNames" rows="6" placeholder="e.g. Rita Das, Mita Pal, ..." required class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 focus:ring-2 focus:ring-indigo-500 outline-none"></textarea>
+                                </div>
+                                <button type="submit" class="px-6 py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200">Upload Students</button>
+                            </form>
+                            <div id="uploadStatus" class="mt-4 font-medium"></div>
                         </div>
                     </div>
-                    <div class="control-group">
-                        <label for="studentNames">ছাত্রীদের নাম (কমা দিয়ে আলাদা করুন)</label>
-                        <textarea id="studentNames" rows="8" placeholder="যেমন: রিতা দাস, মিতা পাল, ..." required></textarea>
-                    </div>
-                    <button type="submit" class="btn">আপলোড করুন</button>
-                </form>
-                <div id="uploadStatus" class="upload-status"></div>
-            </div>
-        </div>
 
-        <!-- Tab 3: View Students -->
-        <div id="ViewStudents" class="tab-content">
-            <div class="content-wrapper">
-                <h2>ছাত্রীর তালিকা দেখুন</h2>
-                <hr>
-                <div class="controls-container">
-                    <div class="control-group">
-                        <label for="viewYear">শিক্ষাবর্ষ নির্বাচন করুন</label>
-                        <select id="viewYear"></select>
+                    <!-- Tab 3: View Students -->
+                    <div id="ViewStudents" class="tab-content hidden animate-fade-in">
+                        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                            <div class="flex flex-wrap gap-4 items-end mb-6">
+                                <div class="flex-1 min-w-[200px]">
+                                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Academic Year</label>
+                                    <select id="viewYear" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 focus:ring-2 focus:ring-indigo-500 outline-none"></select>
+                                </div>
+                                <button id="viewStudentsBtn" class="px-6 py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200">View List</button>
+                            </div>
+                            <div id="student-details-display" class="space-y-6"></div>
+                        </div>
                     </div>
-                    <button id="viewStudentsBtn" class="btn">তালিকা দেখুন</button>
-                </div>
-                <div id="student-details-display" class="student-details-display"></div>
-            </div>
-        </div>
 
-        <!-- Tab 4: View All Marks -->
-        <div id="ViewAllMarks" class="tab-content">
-            <div class="content-wrapper">
-                <h2>সমন্বিত মার্কশিট দেখুন</h2>
-                <hr>
-                <div class="controls-container">
-                    <div class="control-group">
-                        <label for="marksViewYear">শিক্ষাবর্ষ নির্বাচন করুন</label>
-                        <select id="marksViewYear"></select>
+                    <!-- Tab 4: View All Marks -->
+                    <div id="ViewAllMarks" class="tab-content hidden animate-fade-in">
+                        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                            <div class="flex flex-wrap gap-4 items-end mb-6">
+                                <div class="flex-1 min-w-[150px]">
+                                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Year</label>
+                                    <select id="marksViewYear" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 focus:ring-2 focus:ring-indigo-500 outline-none"></select>
+                                </div>
+                                <div class="flex-1 min-w-[150px]">
+                                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Section</label>
+                                    <select id="marksViewSection" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 focus:ring-2 focus:ring-indigo-500 outline-none">
+                                        <option value="C">Section C</option>
+                                        <option value="D">Section D</option>
+                                    </select>
+                                </div>
+                                <button id="viewAllMarksBtn" class="px-6 py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-colors">View Marksheet</button>
+                                <button id="printMarksheetBtn" class="px-6 py-3 bg-slate-100 text-slate-700 border border-slate-200 rounded-xl font-bold hover:bg-slate-200 transition-colors" style="display: none;">Print Table</button>
+                                <button id="printProgressReportBtn" class="px-6 py-3 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-700 transition-colors shadow-lg shadow-emerald-200" style="display: none;">Print Report Cards</button>
+                            </div>
+                            <div id="consolidated-marks-display" class="overflow-x-auto"></div>
+                        </div>
                     </div>
-                    <div class="control-group">
-                        <label for="marksViewSection">সেকশন নির্বাচন করুন</label>
-                        <select id="marksViewSection"><option value="C">Section C</option><option value="D">Section D</option></select>
-                    </div>
-                    <button id="viewAllMarksBtn" class="btn">Consolidated Marksheet দেখুন</button>
-                    <button id="printMarksheetBtn" class="btn btn-secondary" style="display: none;">টেবিল প্রিন্ট করুন</button>
-                    <button id="printProgressReportBtn" class="btn btn-success" style="display: none;">প্রগ্রেস রিপোর্ট প্রিন্ট করুন</button>
-                </div>
-                <div id="consolidated-marks-display" class="content-wrapper">
-                    <p>অনুগ্রহ করে বছর এবং সেকশন নির্বাচন করে মার্কশিট দেখুন।</p>
-                </div>
-            </div>
-        </div>
 
-        <!-- Tab 5: Unlock Requests -->
-        <div id="UnlockRequests" class="tab-content">
-            <div class="content-wrapper">
-                <h2>মার্কশিট আনলক করার অনুরোধ</h2>
-                <hr>
-                <table class="marks-table">
-                    <thead>
-                        <tr>
-                            <th>শিক্ষিকার নাম</th>
-                            <th>বিষয়</th>
-                            <th>শিক্ষাবর্ষ</th>
-                            <th>সেকশন</th>
-                            <th>ইভ্যালুয়েশন</th>
-                            <th>কার্যকলাপ</th>
-                        </tr>
-                    </thead>
-                    <tbody id="unlock-requests-body">
-                        <!-- Unlock requests will be loaded here -->
-                    </tbody>
-                </table>
-            </div>
+                    <!-- Tab 5: Unlock Requests -->
+                    <div id="UnlockRequests" class="tab-content hidden animate-fade-in">
+                        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                            <div class="p-6 border-b border-slate-100">
+                                <h3 class="text-lg font-bold text-slate-800">Unlock Requests</h3>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-sm text-left">
+                                    <thead class="bg-slate-100 text-slate-600 font-bold uppercase text-xs tracking-wider border-b border-slate-200">
+                                        <tr>
+                                            <th class="px-6 py-4">Teacher</th>
+                                            <th class="px-6 py-4">Subject</th>
+                                            <th class="px-6 py-4">Year</th>
+                                            <th class="px-6 py-4">Section</th>
+                                            <th class="px-6 py-4">Evolution</th>
+                                            <th class="px-6 py-4 text-center">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="unlock-requests-body" class="divide-y divide-slate-100"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </main>
         </div>
-    </main>
+    </div>
 
     <script src="auth.js"></script>
     <script src="admin_dashboard.js"></script>
+    <script>
+        // Sidebar Toggle
+        const sidebar = document.getElementById('sidebar');
+        const openBtn = document.getElementById('openSidebar');
+        const closeBtn = document.getElementById('closeSidebar');
+        function toggleSidebar() { sidebar.classList.toggle('-translate-x-full'); }
+        if(openBtn) openBtn.addEventListener('click', toggleSidebar);
+        if(closeBtn) closeBtn.addEventListener('click', toggleSidebar);
+
+        // Tab Switching Logic
+        function openTab(evt, tabName) {
+            const tabs = document.getElementsByClassName("tab-content");
+            for (let i = 0; i < tabs.length; i++) {
+                tabs[i].classList.add("hidden");
+            }
+            const links = document.getElementsByClassName("tab-link");
+            for (let i = 0; i < links.length; i++) {
+                links[i].classList.remove("bg-blue-400", "text-white", "shadow-lg");
+                links[i].classList.add("text-blue-100", "hover:bg-white/10", "hover:text-white");
+            }
+            document.getElementById(tabName).classList.remove("hidden");
+            
+            // Add active classes to clicked button
+            evt.currentTarget.classList.remove("text-blue-100", "hover:bg-white/10", "hover:text-white");
+            evt.currentTarget.classList.add("bg-blue-400", "text-white", "shadow-lg");
+            
+            // Close sidebar on mobile after selection
+            if(window.innerWidth < 768) {
+                sidebar.classList.add('-translate-x-full');
+            }
+        }
+    </script>
 </body>
 </html>

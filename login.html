@@ -1,27 +1,41 @@
+<!-- c:\Users\manas\OneDrive\Desktop\websites\Students marks entry\login.html -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>লগইন</title>
-    <link rel="stylesheet" href="style.css">
-</head><body>
-    <div class="form-container">
-        <h2>স্কুল মার্কস ম্যানেজমেন্ট সিস্টেমে লগইন করুন</h2>
-        <form id="loginForm">
-            <div class="input-group">
-                <label for="uniqueId">ইউনিক আইডি</label>
-                <input type="text" id="uniqueId" name="uniqueId" placeholder="আপনার ইউনিক আইডি লিখুন" required>
+    <title>Login - Marks Entry</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Plus Jakarta Sans', sans-serif; }</style>
+</head>
+<body class="bg-slate-50 flex items-center justify-center min-h-screen p-4">
+    <div class="w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-100">
+        <div class="bg-[#0000FF] p-8 text-center relative overflow-hidden">
+            <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+            <h1 class="text-2xl font-bold text-white relative z-10">Banglar Shiksha</h1>
+            <p class="text-blue-100 text-sm mt-1 relative z-10">Marks Management Portal</p>
+        </div>
+        
+        <div class="p-8">
+            <h2 class="text-xl font-bold text-slate-800 mb-6 text-center">Login to your account</h2>
+            <form id="loginForm" class="space-y-5">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Unique ID</label>
+                    <input type="text" id="uniqueId" required class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 focus:ring-2 focus:ring-indigo-500 outline-none transition-all" placeholder="Enter your ID">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Password</label>
+                    <div class="relative">
+                        <input type="password" id="password" required class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 focus:ring-2 focus:ring-indigo-500 outline-none transition-all" placeholder="••••••••">
+                        <button type="button" id="togglePassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">👁️</button>
+                    </div>
+                </div>
+                <button type="submit" class="w-full py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200">Login</button>
+            </form>
+            <div class="mt-6 text-center">
+                <p class="text-sm text-slate-500">New Teacher? <a href="register.html" class="text-indigo-600 font-bold hover:underline">Register Here</a></p>
             </div>
-            <div class="input-group" style="position: relative;">
-                <label for="password">পাসওয়ার্ড</label>
-                <input type="password" id="password" name="password" placeholder="আপনার পাসওয়ার্ড লিখুন" required style="padding-right: 40px; width: 100%; box-sizing: border-box;">
-                <span id="togglePassword" style="position: absolute; right: 10px; top: 38px; cursor: pointer; font-size: 1.2rem;" title="পাসওয়ার্ড দেখুন">👁️</span>
-            </div>
-            <button type="submit" class="btn">লগইন</button>
-        </form>
-        <div class="bottom-text">
-            <p>Don't have an account? <a href="register.html">রেজিস্টার করুন</a></p>
         </div>
     </div>
     <script src="auth.js"></script>
