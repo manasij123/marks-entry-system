@@ -1,3 +1,6 @@
+// Global Subjects List
+const SUBJECTS_LIST = ['BNGA', 'ENGL', 'MATH', 'PSC', 'LSC', 'HIST', 'GEGR'];
+
 document.addEventListener('DOMContentLoaded', () => {
     // Check if user is admin, otherwise redirect
     const user = JSON.parse(sessionStorage.getItem('loggedInUser'));
@@ -20,6 +23,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Populate Subject Dropdown
+    const subjectSelect = document.getElementById('marksViewSubject');
+    if (subjectSelect) {
+        SUBJECTS_LIST.forEach(sub => subjectSelect.add(new Option(sub, sub)));
+    }
+
     // Initial data load
     loadDashboardOverview();
     loadTeachers();
@@ -28,8 +37,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Event Listeners
     document.getElementById('studentAddForm').addEventListener('submit', handleAddStudents);
     document.getElementById('viewStudentsBtn').addEventListener('click', viewStudentsBySection);
-    document.getElementById('viewAllMarksBtn').addEventListener('click', viewConsolidatedMarks);
-    document.getElementById('printMarksheetBtn').addEventListener('click', () => handlePrint('consolidated-marks-display'));
+    document.getElementById('viewSubjectMarksBtn').addEventListener('click', viewSubjectMarks);
+    document.getElementById('viewConsolidatedBtn').addEventListener('click', viewConsolidatedReadOnly);
     document.getElementById('printProgressReportBtn').addEventListener('click', handleProgressReportPrint);
 
     // Setup auto logout on inactivity
@@ -210,17 +219,21 @@ async function viewStudentsBySection() {
     document.getElementById('view-student-stats').classList.remove('hidden');
 }
 
-async function viewConsolidatedMarks() {
+async function viewSubjectMarks() {
     const year = document.getElementById('marksViewYear').value;
     const section = document.getElementById('marksViewSection').value;
+    const subject = document.getElementById('marksViewSubject').value;
     const displayDiv = document.getElementById('consolidated-marks-display');
-    const printBtn = document.getElementById('printMarksheetBtn');
-    const progressReportPrintBtn = document.getElementById('printProgressReportBtn');
     const statsContainer = document.getElementById('marks-stats-container');
 
+    if (!year || !section || !subject) {
+        alert('অনুগ্রহ করে Year, Section এবং Subject নির্বাচন করুন।');
+        return;
+    }
+
     displayDiv.innerHTML = 'লোড হচ্ছে...';
-    printBtn.style.display = 'none';
-    progressReportPrintBtn.style.display = 'none';
+    document.getElementById('printProgressReportBtn').classList.add('hidden');
+
     // Fetch students and marks
     const [studentsRes, marksRes] = await Promise.all([
         fetch(`/api/students/${year}/${section}`),
@@ -239,20 +252,122 @@ async function viewConsolidatedMarks() {
     document.getElementById('marks-stats-total').textContent = students.length;
     statsContainer.classList.remove('hidden');
 
-    // Fetch subjects dynamically
-    // const subjectsRes = await fetch('/api/subjects');
-    // const subjects = await subjectsRes.json();
+    const evolutions = ['1', '2', '3'];
+    const marksByStudent = {};
 
-    // Manually define subjects to ensure all columns appear
-    // আপনার ডাটাবেসে সাবজেক্টের নাম বা কোড যা দেওয়া আছে, ঠিক সেই বানান এখানে লিখুন
-    const subjects = ['BNGA', 'ENGL', 'MATH', 'PSC', 'LSC', 'HIST', 'GEGR'];
+    students.forEach(student => {
+        marksByStudent[student.roll] = { name: student.name };
+        // Only for the selected subject
+        marksByStudent[student.roll][subject] = {};
+        evolutions.forEach(evo => {
+            marksByStudent[student.roll][subject][evo] = { W: '-', P: '-' };
+        });
+    });
+
+    for (const key in marksData) {
+        const sheet = marksData[key];
+        // Filter only for the selected subject
+        if (sheet.data && sheet.subject === subject) {
+            for (const roll in sheet.data) {
+                if (marksByStudent[roll] && marksByStudent[roll][subject] && marksByStudent[roll][subject][sheet.evolution]) {
+                    marksByStudent[roll][subject][sheet.evolution].W = sheet.data[roll].written || '-';
+                    marksByStudent[roll][subject][sheet.evolution].P = sheet.data[roll].practical || '-';
+                }
+            }
+        }
+    }
+
+    // Generate HTML table for Single Subject
+    let tableHTML = `
+        <div class="text-center mb-6">
+            <h2 class="text-xl font-bold text-slate-800">Edit Marks: ${subject}</h2>
+            <p class="text-sm text-slate-500">Year: <span class="font-bold">${year}</span> | Section: <span class="font-bold">${section}</span></p>
+        </div>
+        <div class="overflow-x-auto border border-slate-200 rounded-xl shadow-lg bg-white">
+        <table class="w-full text-sm text-left border-collapse">
+            <thead>
+                <tr class="bg-slate-800 text-white text-xs uppercase tracking-wider">
+                    <th class="border border-slate-600 px-4 py-3 font-bold text-center md:sticky md:left-0 z-20 bg-slate-800 shadow-md" rowspan="2" style="width: 80px;">Roll</th>
+                    <th class="border border-slate-600 px-4 py-3 font-bold text-left md:sticky md:left-[80px] z-20 bg-slate-800 shadow-md" rowspan="2" style="min-width: 200px;">Name</th>
+                    <th class="border border-slate-600 px-2 py-2 text-center bg-indigo-600 text-white font-bold" colspan="2">Evaluation 1</th>
+                    <th class="border border-slate-600 px-2 py-2 text-center bg-indigo-600 text-white font-bold" colspan="2">Evaluation 2</th>
+                    <th class="border border-slate-600 px-2 py-2 text-center bg-indigo-600 text-white font-bold" colspan="2">Evaluation 3</th>
+                </tr>
+                <tr class="bg-slate-100 text-slate-700 text-xs font-semibold">
+                    <th class="border border-slate-200 px-1 py-1 text-center w-16">W</th><th class="border border-slate-200 px-1 py-1 text-center w-16">P</th>
+                    <th class="border border-slate-200 px-1 py-1 text-center w-16">W</th><th class="border border-slate-200 px-1 py-1 text-center w-16">P</th>
+                    <th class="border border-slate-200 px-1 py-1 text-center w-16">W</th><th class="border border-slate-200 px-1 py-1 text-center w-16">P</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200 bg-white">`;
+
+    students.sort((a, b) => a.roll - b.roll).forEach(student => {
+        tableHTML += `<tr class="hover:bg-indigo-50 transition-colors group">
+            <td class="border border-slate-200 px-4 py-2 font-mono text-center font-bold text-slate-700 md:sticky md:left-0 bg-white group-hover:bg-indigo-50 md:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">${student.roll}</td>
+            <td class="border border-slate-200 px-4 py-2 font-semibold whitespace-nowrap text-slate-800 md:sticky md:left-[80px] bg-white group-hover:bg-indigo-50 md:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">${student.name}</td>`;
+        
+        const studentMarks = marksByStudent[student.roll][subject];
+        evolutions.forEach(evo => {
+            const wVal = studentMarks[evo].W;
+            const pVal = studentMarks[evo].P;
+            
+            tableHTML += `<td class="border border-slate-200 px-1 py-2 text-center cursor-pointer hover:bg-yellow-100 transition-colors text-xs font-medium ${wVal === '-' ? 'text-slate-300' : 'text-slate-700'}" 
+                data-year="${year}" data-section="${section}" 
+                data-subject="${subject}" data-evo="${evo}" 
+                data-roll="${student.roll}" data-type="W"
+                onclick="makeEditable(this)">${wVal}</td>`;
+                
+            tableHTML += `<td class="border border-slate-200 px-1 py-2 text-center cursor-pointer hover:bg-yellow-100 transition-colors text-xs font-medium bg-slate-50/30 ${pVal === '-' ? 'text-slate-300' : 'text-slate-700'}" 
+                data-year="${year}" data-section="${section}" 
+                data-subject="${subject}" data-evo="${evo}" 
+                data-roll="${student.roll}" data-type="P"
+                onclick="makeEditable(this)">${pVal}</td>`;
+        });
+        tableHTML += `</tr>`;
+    });
+
+    tableHTML += '</tbody></table></div>';
+    displayDiv.innerHTML = tableHTML;
+}
+
+async function viewConsolidatedReadOnly() {
+    const year = document.getElementById('marksViewYear').value;
+    const section = document.getElementById('marksViewSection').value;
+    const displayDiv = document.getElementById('consolidated-marks-display');
+    const statsContainer = document.getElementById('marks-stats-container');
+
+    if (!year || !section) {
+        alert('অনুগ্রহ করে Year এবং Section নির্বাচন করুন।');
+        return;
+    }
+
+    displayDiv.innerHTML = 'লোড হচ্ছে...';
+    document.getElementById('printProgressReportBtn').classList.remove('hidden');
+
+    // Fetch students and marks
+    const [studentsRes, marksRes] = await Promise.all([
+        fetch(`/api/students/${year}/${section}`),
+        fetch(`/api/marks/consolidated/${year}/${section}`)
+    ]);
+
+    const students = await studentsRes.json();
+    const marksData = await marksRes.json();
+
+    if (students.length === 0) {
+        displayDiv.innerHTML = '<p>এই সেকশনের জন্য কোনো ছাত্রী পাওয়া যায়নি।</p>';
+        return;
+    }
+
+    // Update Stats
+    document.getElementById('marks-stats-total').textContent = students.length;
+    statsContainer.classList.remove('hidden');
 
     const evolutions = ['1', '2', '3'];
     const marksByStudent = {};
 
     students.forEach(student => {
         marksByStudent[student.roll] = { name: student.name };
-        subjects.forEach(subject => { // Now uses dynamic subjects
+        SUBJECTS_LIST.forEach(subject => {
             marksByStudent[student.roll][subject] = {};
             evolutions.forEach(evo => {
                 marksByStudent[student.roll][subject][evo] = { W: '-', P: '-' };
@@ -275,8 +390,12 @@ async function viewConsolidatedMarks() {
     // Generate HTML table
     let tableHTML = `
         <div class="text-center mb-6">
-            <h2 class="text-xl font-bold text-slate-800">Consolidated Marksheet</h2>
+            <h2 class="text-xl font-bold text-slate-800">Full Consolidated Marksheet</h2>
             <p class="text-sm text-slate-500">Year: <span class="font-bold">${year}</span> | Section: <span class="font-bold">${section}</span></p>
+            <button onclick="handlePrint('consolidated-marks-display')" class="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-slate-800 text-white rounded-lg font-bold hover:bg-slate-700 transition-colors shadow-lg">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>
+                Print Marksheet
+            </button>
         </div>
         <div class="overflow-x-auto border border-slate-200 rounded-xl shadow-lg bg-white">
         <table class="w-full text-sm text-left border-collapse">
@@ -284,17 +403,17 @@ async function viewConsolidatedMarks() {
                 <tr class="bg-slate-800 text-white text-xs uppercase tracking-wider">
                     <th class="border border-slate-600 px-4 py-3 font-bold text-center md:sticky md:left-0 z-20 bg-slate-800 shadow-md" rowspan="3" style="width: 80px; min-width: 80px; max-width: 80px;">Roll</th>
                     <th class="border border-slate-600 px-4 py-3 font-bold text-left md:sticky md:left-[80px] z-20 bg-slate-800 shadow-md" rowspan="3" style="min-width: 200px;">Name</th>`;
-    subjects.forEach(sub => {
+    SUBJECTS_LIST.forEach(sub => {
         tableHTML += `<th class="border border-slate-600 px-2 py-2 text-center bg-indigo-600 text-white font-bold" colspan="6">${sub}</th>`;
     });
     tableHTML += `</tr><tr class="bg-slate-100 text-slate-700 text-xs font-semibold">`;
-    subjects.forEach(() => {
+    SUBJECTS_LIST.forEach(() => {
         evolutions.forEach(evo => {
             tableHTML += `<th class="border border-slate-300 px-1 py-1 text-center bg-slate-200 text-slate-700" colspan="2">Eval ${evo}</th>`;
         });
     });
     tableHTML += `</tr><tr class="bg-white text-[10px] text-slate-600">`;
-     subjects.forEach(sub => {
+    SUBJECTS_LIST.forEach(sub => {
         evolutions.forEach(evo => {
             tableHTML += `<th class="border border-slate-200 px-1 py-1 text-center w-12 bg-slate-50 font-bold text-slate-500">W</th><th class="border border-slate-200 px-1 py-1 text-center w-12 bg-white font-bold text-slate-500">P</th>`;
         });
@@ -306,55 +425,22 @@ async function viewConsolidatedMarks() {
             <td class="border border-slate-200 px-4 py-2 font-mono text-center font-bold text-slate-700 md:sticky md:left-0 bg-white group-hover:bg-indigo-50 md:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]" style="width: 80px; min-width: 80px; max-width: 80px;">${student.roll}</td>
             <td class="border border-slate-200 px-4 py-2 font-semibold whitespace-nowrap text-slate-800 md:sticky md:left-[80px] bg-white group-hover:bg-indigo-50 md:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">${student.name}</td>`;
         const studentMarks = marksByStudent[student.roll];
-        subjects.forEach(sub => {
+        SUBJECTS_LIST.forEach(sub => {
             evolutions.forEach(evo => {
                 const wVal = studentMarks[sub][evo].W;
                 const pVal = studentMarks[sub][evo].P;
                 
-                tableHTML += `<td class="border border-slate-200 px-1 py-2 text-center cursor-pointer hover:bg-yellow-100 transition-colors text-xs font-medium ${wVal === '-' ? 'text-slate-300' : 'text-slate-700'}" 
-                    data-year="${year}" data-section="${section}" 
-                    data-subject="${sub}" data-evo="${evo}" 
-                    data-roll="${student.roll}" data-type="W"
-                    onclick="makeEditable(this)">${wVal}</td>`;
+                // Read-only cells (No onclick)
+                tableHTML += `<td class="border border-slate-200 px-1 py-2 text-center text-xs font-medium ${wVal === '-' ? 'text-slate-300' : 'text-slate-700'}">${wVal}</td>`;
                     
-                tableHTML += `<td class="border border-slate-200 px-1 py-2 text-center cursor-pointer hover:bg-yellow-100 transition-colors text-xs font-medium bg-slate-50/30 ${pVal === '-' ? 'text-slate-300' : 'text-slate-700'}" 
-                    data-year="${year}" data-section="${section}" 
-                    data-subject="${sub}" data-evo="${evo}" 
-                    data-roll="${student.roll}" data-type="P"
-                    onclick="makeEditable(this)">${pVal}</td>`;
+                tableHTML += `<td class="border border-slate-200 px-1 py-2 text-center text-xs font-medium bg-slate-50/30 ${pVal === '-' ? 'text-slate-300' : 'text-slate-700'}">${pVal}</td>`;
             });
         });
         tableHTML += `</tr>`;
     });
 
     tableHTML += '</tbody></table></div>';
-
-    // Add Footer with Print Buttons
-    tableHTML += '<div class="mt-4 overflow-x-auto"><table class="w-full text-sm border-collapse"><tfoot><tr><td colspan="2" class="px-4 py-4 text-right font-bold text-slate-700">Print Subject:</td>';
-    subjects.forEach(sub => {
-        // Create a safe ID for the button
-        const safeSub = sub.replace(/[^a-zA-Z0-9]/g, '_');
-        tableHTML += `<td colspan="6" class="px-2 py-3 text-center">
-            <button id="print-btn-${safeSub}" class="inline-flex items-center justify-center gap-2 bg-white border border-indigo-200 text-indigo-600 hover:bg-indigo-600 hover:text-white px-4 py-2 rounded-full text-xs font-bold transition-all shadow-sm hover:shadow-md w-full max-w-[120px]">
-                <span>🖨️</span> Print
-            </button>
-        </td>`;
-    });
-    tableHTML += '</tr></tfoot></table></div>';
-
     displayDiv.innerHTML = tableHTML;
-
-    // Attach event listeners to the new buttons
-    subjects.forEach(sub => {
-        const safeSub = sub.replace(/[^a-zA-Z0-9]/g, '_');
-        const btn = document.getElementById(`print-btn-${safeSub}`);
-        if (btn) {
-            btn.onclick = () => printSpecificSubject(sub, section, year, students, marksByStudent);
-        }
-    });
-
-    printBtn.style.display = 'inline-block';
-    progressReportPrintBtn.style.display = 'inline-block';
 }
 
 /**

@@ -293,9 +293,17 @@
                                         <option value="D">Section D</option>
                                     </select>
                                 </div>
-                                <button id="viewAllMarksBtn" class="px-6 py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-colors">View Marksheet</button>
-                                <button id="printMarksheetBtn" class="px-6 py-3 bg-slate-100 text-slate-700 border border-slate-200 rounded-xl font-bold hover:bg-slate-200 transition-colors" style="display: none;">Print Table</button>
-                                <button id="printProgressReportBtn" class="px-6 py-3 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-700 transition-colors shadow-lg shadow-emerald-200" style="display: none;">Print Report Cards</button>
+                                <div class="flex-1 min-w-[150px]">
+                                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Subject</label>
+                                    <select id="marksViewSubject" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 focus:ring-2 focus:ring-indigo-500 outline-none">
+                                        <option value="">-- Select Subject --</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap gap-3 mb-6">
+                                <button id="viewSubjectMarksBtn" class="px-6 py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-colors shadow-md">Edit Subject Marks</button>
+                                <button id="viewConsolidatedBtn" class="px-6 py-3 bg-white border border-slate-300 text-slate-700 rounded-xl font-bold hover:bg-slate-50 transition-colors shadow-sm">View Full Marksheet (Read-only)</button>
+                                <button id="printProgressReportBtn" class="px-6 py-3 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-700 transition-colors shadow-lg shadow-emerald-200 hidden">Print Report Cards</button>
                             </div>
                             <div id="consolidated-marks-display" class="overflow-x-auto"></div>
                         </div>
