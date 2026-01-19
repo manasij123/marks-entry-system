@@ -287,8 +287,8 @@ async function viewSubjectMarks() {
         <table class="w-full text-sm text-left border-collapse">
             <thead>
                 <tr class="bg-slate-800 text-white text-xs uppercase tracking-wider">
-                    <th class="border border-slate-600 px-4 py-3 font-bold text-center md:sticky md:left-0 z-20 bg-slate-800 shadow-md" rowspan="2" style="width: 80px;">Roll</th>
-                    <th class="border border-slate-600 px-4 py-3 font-bold text-left md:sticky md:left-[80px] z-20 bg-slate-800 shadow-md" rowspan="2" style="min-width: 200px;">Name</th>
+                    <th class="border border-slate-600 px-2 py-3 font-bold text-center md:sticky md:left-0 z-20 bg-slate-800 shadow-md" rowspan="2" style="width: 60px; min-width: 60px; max-width: 60px;">Roll</th>
+                    <th class="border border-slate-600 px-2 py-3 font-bold text-left md:sticky md:left-[60px] z-20 bg-slate-800 shadow-md" rowspan="2">Name</th>
                     <th class="border border-slate-600 px-2 py-2 text-center bg-indigo-600 text-white font-bold" colspan="2">Evaluation 1</th>
                     <th class="border border-slate-600 px-2 py-2 text-center bg-indigo-600 text-white font-bold" colspan="2">Evaluation 2</th>
                     <th class="border border-slate-600 px-2 py-2 text-center bg-indigo-600 text-white font-bold" colspan="2">Evaluation 3</th>
@@ -303,8 +303,8 @@ async function viewSubjectMarks() {
 
     students.sort((a, b) => a.roll - b.roll).forEach(student => {
         tableHTML += `<tr class="hover:bg-indigo-50 transition-colors group">
-            <td class="border border-slate-200 px-4 py-2 font-mono text-center font-bold text-slate-700 md:sticky md:left-0 bg-white group-hover:bg-indigo-50 md:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">${student.roll}</td>
-            <td class="border border-slate-200 px-4 py-2 font-semibold whitespace-nowrap text-slate-800 md:sticky md:left-[80px] bg-white group-hover:bg-indigo-50 md:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">${student.name}</td>`;
+            <td class="border border-slate-200 px-2 py-2 font-mono text-center font-bold text-slate-700 md:sticky md:left-0 bg-white group-hover:bg-indigo-50 md:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]" style="width: 60px; min-width: 60px; max-width: 60px;">${student.roll}</td>
+            <td class="border border-slate-200 px-2 py-2 font-semibold whitespace-nowrap text-slate-800 md:sticky md:left-[60px] bg-white group-hover:bg-indigo-50 md:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">${student.name}</td>`;
         
         const studentMarks = marksByStudent[student.roll][subject];
         evolutions.forEach(evo => {
@@ -401,8 +401,8 @@ async function viewConsolidatedReadOnly() {
         <table class="w-full text-sm text-left border-collapse">
             <thead>
                 <tr class="bg-slate-800 text-white text-xs uppercase tracking-wider">
-                    <th class="border border-slate-600 px-4 py-3 font-bold text-center md:sticky md:left-0 z-20 bg-slate-800 shadow-md" rowspan="3" style="width: 80px; min-width: 80px; max-width: 80px;">Roll</th>
-                    <th class="border border-slate-600 px-4 py-3 font-bold text-left md:sticky md:left-[80px] z-20 bg-slate-800 shadow-md" rowspan="3" style="min-width: 200px;">Name</th>`;
+                    <th class="border border-slate-600 px-2 py-3 font-bold text-center md:sticky md:left-0 z-20 bg-slate-800 shadow-md" rowspan="3" style="width: 60px; min-width: 60px; max-width: 60px;">Roll</th>
+                    <th class="border border-slate-600 px-2 py-3 font-bold text-left md:sticky md:left-[60px] z-20 bg-slate-800 shadow-md" rowspan="3">Name</th>`;
     SUBJECTS_LIST.forEach(sub => {
         tableHTML += `<th class="border border-slate-600 px-2 py-2 text-center bg-indigo-600 text-white font-bold" colspan="6">${sub}</th>`;
     });
@@ -422,8 +422,8 @@ async function viewConsolidatedReadOnly() {
 
     students.sort((a, b) => a.roll - b.roll).forEach(student => {
         tableHTML += `<tr class="hover:bg-indigo-50 transition-colors group">
-            <td class="border border-slate-200 px-4 py-2 font-mono text-center font-bold text-slate-700 md:sticky md:left-0 bg-white group-hover:bg-indigo-50 md:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]" style="width: 80px; min-width: 80px; max-width: 80px;">${student.roll}</td>
-            <td class="border border-slate-200 px-4 py-2 font-semibold whitespace-nowrap text-slate-800 md:sticky md:left-[80px] bg-white group-hover:bg-indigo-50 md:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">${student.name}</td>`;
+            <td class="border border-slate-200 px-2 py-2 font-mono text-center font-bold text-slate-700 md:sticky md:left-0 bg-white group-hover:bg-indigo-50 md:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]" style="width: 60px; min-width: 60px; max-width: 60px;">${student.roll}</td>
+            <td class="border border-slate-200 px-2 py-2 font-semibold whitespace-nowrap text-slate-800 md:sticky md:left-[60px] bg-white group-hover:bg-indigo-50 md:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">${student.name}</td>`;
         const studentMarks = marksByStudent[student.roll];
         SUBJECTS_LIST.forEach(sub => {
             evolutions.forEach(evo => {
