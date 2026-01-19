@@ -472,6 +472,46 @@ app.post('/api/admin/update-mark', async (req, res) => {
     }
 });
 
+/**
+ * API Endpoint: Get Overview Statistics for Admin Dashboard
+ */
+app.get('/api/stats/overview', async (req, res) => {
+    try {
+        const currentYear = new Date().getFullYear();
+
+        // 1. Get total teachers
+        const totalTeachers = await db.collection('teachers').countDocuments();
+
+        // 2. Get total students (all years)
+        const studentDocsAll = await db.collection('students').find({}).toArray();
+        const totalStudents = studentDocsAll.reduce((acc, doc) => acc + (doc.students ? doc.students.length : 0), 0);
+
+        // 3. Get pending unlock requests
+        const pendingRequests = await db.collection('unlockRequests').countDocuments({ status: 'pending' });
+
+        // 4. Get student distribution for the current year
+        const studentDocsCurrentYear = await db.collection('students').find({ year: currentYear }).toArray();
+        const studentsPerClass = {};
+        studentDocsCurrentYear.forEach(doc => {
+            if (doc.students && doc.students.length > 0) {
+                studentsPerClass[doc.section] = doc.students.length;
+            }
+        });
+
+        res.json({
+            totalTeachers,
+            totalStudents,
+            pendingRequests,
+            currentYear,
+            studentsPerClass
+        });
+
+    } catch (error) {
+        console.error("Error fetching overview stats:", error);
+        res.status(500).json({ message: 'Server error while fetching stats.' });
+    }
+});
+
 // --- WebSocket Server Setup ---
 const wss = new WebSocketServer({ server });
 

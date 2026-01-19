@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Initial data load
+    loadDashboardOverview();
     loadTeachers();
     loadUnlockRequests();
 
@@ -47,6 +48,48 @@ function openTab(evt, tabName) {
     }
     document.getElementById(tabName).style.display = "block";
     evt.currentTarget.className += " active";
+}
+
+async function loadDashboardOverview() {
+    try {
+        const response = await fetch('/api/stats/overview');
+        if (!response.ok) {
+            throw new Error('Failed to load overview stats');
+        }
+        const stats = await response.json();
+
+        document.getElementById('stats-total-teachers').textContent = stats.totalTeachers;
+        document.getElementById('stats-total-students').textContent = stats.totalStudents;
+        document.getElementById('stats-pending-requests').textContent = stats.pendingRequests;
+        document.getElementById('stats-academic-year').textContent = stats.currentYear;
+
+        const chartContainer = document.getElementById('student-distribution-chart');
+        chartContainer.innerHTML = ''; // Clear placeholder
+
+        if (Object.keys(stats.studentsPerClass).length > 0) {
+            const maxStudents = Math.max(...Object.values(stats.studentsPerClass));
+            
+            for (const [section, count] of Object.entries(stats.studentsPerClass)) {
+                const percentage = (count / (maxStudents || 1)) * 100;
+                const barHtml = `
+                    <div class="flex items-center gap-4">
+                        <div class="w-24 text-sm font-semibold text-slate-600">Section ${section}</div>
+                        <div class="flex-1 bg-slate-100 rounded-full h-6">
+                            <div class="bg-gradient-to-r from-cyan-400 to-blue-500 h-6 rounded-full text-white text-xs font-bold flex items-center justify-end pr-3" style="width: ${percentage}%;">
+                                ${count}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                chartContainer.innerHTML += barHtml;
+            }
+        } else {
+            chartContainer.innerHTML = '<p class="text-sm text-slate-500">No student data available for the current year.</p>';
+        }
+
+    } catch (error) {
+        console.error('Error loading dashboard overview:', error);
+    }
 }
 
 async function loadTeachers() {
@@ -103,6 +146,7 @@ async function handleAddStudents(event) {
     if (response.ok) {
         statusDiv.textContent = result.message;
         statusDiv.style.color = 'green';
+        loadDashboardOverview(); // Refresh stats
         document.getElementById('studentAddForm').reset();
     } else {
         statusDiv.textContent = `ত্রুটি: ${result.message}`;
@@ -452,11 +496,13 @@ async function loadUnlockRequests() {
 async function approveRequest(id) {
     await fetch(`/api/unlock-requests/${id}/approve`, { method: 'PUT' });
     loadUnlockRequests();
+    loadDashboardOverview();
 }
 
 async function deleteRequest(id) {
     await fetch(`/api/unlock-requests/${id}`, { method: 'DELETE' });
     loadUnlockRequests();
+    loadDashboardOverview();
 }
 
 // Other functions like deleteTeacher, resetPassword would go here
@@ -473,6 +519,7 @@ async function deleteTeacher(teacherId) {
             alert(result.message);
             if (response.ok) {
                 loadTeachers(); // Refresh the teachers list
+                loadDashboardOverview();
             }
         } catch (error) {
             alert('শিক্ষিকাকে মোছার সময় একটি ত্রুটি হয়েছে।');
@@ -494,6 +541,7 @@ async function resetPassword(teacherId) {
         });
         alert('পাসওয়ার্ড সফলভাবে রিসেট করা হয়েছে।');
         loadTeachers(); // Refresh the list to show the new password
+        loadDashboardOverview();
     } else if (newPassword !== null) {
         alert('পাসওয়ার্ড খালি রাখা যাবে না।');
     }
@@ -616,6 +664,7 @@ async function editStudent(year, section, roll, currentName) {
             const result = await response.json();
             if (result.success) {
                 alert(result.message);
+                loadDashboardOverview();
                 viewStudentsBySection(); // Refresh the list
             } else {
                 alert(result.message);
@@ -639,6 +688,7 @@ async function deleteStudent(year, section, roll) {
             const result = await response.json();
             alert(result.message);
             if (result.success) {
+                loadDashboardOverview();
                 viewStudentsBySection(); // Refresh the list
             }
         } catch (error) {
