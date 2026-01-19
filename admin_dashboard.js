@@ -282,8 +282,8 @@ async function viewConsolidatedMarks() {
         <table class="w-full text-sm text-left border-collapse">
             <thead>
                 <tr class="bg-slate-800 text-white text-xs uppercase tracking-wider">
-                    <th class="border border-slate-600 px-4 py-3 font-bold text-center sticky left-0 z-20 bg-slate-800 shadow-md" rowspan="3" style="width: 80px; min-width: 80px; max-width: 80px;">Roll</th>
-                    <th class="border border-slate-600 px-4 py-3 font-bold text-left sticky left-[80px] z-20 bg-slate-800 shadow-md" rowspan="3" style="min-width: 200px;">Name</th>`;
+                    <th class="border border-slate-600 px-4 py-3 font-bold text-center md:sticky md:left-0 z-20 bg-slate-800 shadow-md" rowspan="3" style="width: 80px; min-width: 80px; max-width: 80px;">Roll</th>
+                    <th class="border border-slate-600 px-4 py-3 font-bold text-left md:sticky md:left-[80px] z-20 bg-slate-800 shadow-md" rowspan="3" style="min-width: 200px;">Name</th>`;
     subjects.forEach(sub => {
         tableHTML += `<th class="border border-slate-600 px-2 py-2 text-center bg-indigo-600 text-white font-bold" colspan="6">${sub}</th>`;
     });
@@ -303,8 +303,8 @@ async function viewConsolidatedMarks() {
 
     students.sort((a, b) => a.roll - b.roll).forEach(student => {
         tableHTML += `<tr class="hover:bg-indigo-50 transition-colors group">
-            <td class="border border-slate-200 px-4 py-2 font-mono text-center font-bold text-slate-700 sticky left-0 bg-white group-hover:bg-indigo-50 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]" style="width: 80px; min-width: 80px; max-width: 80px;">${student.roll}</td>
-            <td class="border border-slate-200 px-4 py-2 font-semibold whitespace-nowrap text-slate-800 sticky left-[80px] bg-white group-hover:bg-indigo-50 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">${student.name}</td>`;
+            <td class="border border-slate-200 px-4 py-2 font-mono text-center font-bold text-slate-700 md:sticky md:left-0 bg-white group-hover:bg-indigo-50 md:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]" style="width: 80px; min-width: 80px; max-width: 80px;">${student.roll}</td>
+            <td class="border border-slate-200 px-4 py-2 font-semibold whitespace-nowrap text-slate-800 md:sticky md:left-[80px] bg-white group-hover:bg-indigo-50 md:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">${student.name}</td>`;
         const studentMarks = marksByStudent[student.roll];
         subjects.forEach(sub => {
             evolutions.forEach(evo => {
