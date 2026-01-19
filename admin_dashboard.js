@@ -284,7 +284,7 @@ async function viewSubjectMarks() {
             <p class="text-sm text-slate-500">Year: <span class="font-bold">${year}</span> | Section: <span class="font-bold">${section}</span></p>
         </div>
         <div class="overflow-x-auto border border-slate-200 rounded-xl shadow-lg bg-white">
-        <table class="w-full text-sm text-left border-collapse">
+        <table class="text-sm text-left border-collapse">
             <thead>
                 <tr class="bg-slate-800 text-white text-xs uppercase tracking-wider">
                     <th class="border border-slate-600 px-2 py-3 font-bold text-center md:sticky md:left-0 z-20 bg-slate-800 shadow-md" rowspan="2" style="width: 60px; min-width: 60px; max-width: 60px;">Roll</th>
@@ -398,7 +398,7 @@ async function viewConsolidatedReadOnly() {
             </button>
         </div>
         <div class="overflow-x-auto border border-slate-200 rounded-xl shadow-lg bg-white">
-        <table class="w-full text-sm text-left border-collapse">
+        <table class="text-sm text-left border-collapse">
             <thead>
                 <tr class="bg-slate-800 text-white text-xs uppercase tracking-wider">
                     <th class="border border-slate-600 px-2 py-3 font-bold text-center md:sticky md:left-0 z-20 bg-slate-800 shadow-md" rowspan="3" style="width: 60px; min-width: 60px; max-width: 60px;">Roll</th>
