@@ -32,4 +32,9 @@
     #consolidated-marks-display table th, #consolidated-marks-display table td {
         border: 1px solid #000 !important; /* Ensure borders are black for printing */
     }
+
+    /* Hide buttons inside the printable area */
+    #consolidated-marks-display button {
+        display: none !important;
+    }
 }

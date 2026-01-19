@@ -282,6 +282,10 @@ async function viewSubjectMarks() {
         <div class="text-center mb-6">
             <h2 class="text-xl font-bold text-slate-800">Edit Marks: ${subject}</h2>
             <p class="text-sm text-slate-500">Year: <span class="font-bold">${year}</span> | Section: <span class="font-bold">${section}</span></p>
+            <button onclick="handlePrint('consolidated-marks-display')" class="mt-4 inline-flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-violet-600 text-white rounded-full font-bold hover:shadow-lg hover:scale-105 transition-all shadow-md">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>
+                Print Table
+            </button>
         </div>
         <div class="overflow-x-auto border border-slate-200 rounded-xl shadow-lg bg-white">
         <table class="text-sm text-left border-collapse">
