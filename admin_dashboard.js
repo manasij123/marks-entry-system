@@ -95,6 +95,12 @@ async function loadDashboardOverview() {
 async function loadTeachers() {
     const response = await fetch('/api/teachers');
     const teachers = await response.json();
+    
+    // Update Stats
+    document.getElementById('teacher-stats-count').textContent = teachers.length;
+    const subjects = new Set(teachers.map(t => t.subject));
+    document.getElementById('teacher-stats-subjects').textContent = subjects.size;
+
     const teachersListBody = document.getElementById('teachers-list-body');
     teachersListBody.innerHTML = '';
     let count = 1;
@@ -159,6 +165,8 @@ async function viewStudentsBySection() {
     const displayDiv = document.getElementById('student-details-display');
     displayDiv.innerHTML = 'লোড হচ্ছে...';
 
+    let totalStudentsFound = 0;
+    let sectionsFound = 0;
     let allStudentsHtml = '';
     for (const section of ['C', 'D']) {
         const response = await fetch(`/api/students/${year}/${section}`);
@@ -166,6 +174,8 @@ async function viewStudentsBySection() {
         
         allStudentsHtml += `<h3>সেকশন: ${section}</h3>`;
         if (students.length > 0) {
+            totalStudentsFound += students.length;
+            sectionsFound++;
             const table = `<div class="overflow-x-auto mb-8 bg-white rounded-xl border border-slate-200"><table class="w-full text-sm text-left">
                 <thead class="bg-slate-50 text-slate-600 font-bold uppercase text-xs border-b border-slate-200">
                     <tr>
@@ -193,6 +203,11 @@ async function viewStudentsBySection() {
         }
     }
     displayDiv.innerHTML = allStudentsHtml;
+
+    // Update Stats
+    document.getElementById('view-student-stats-total').textContent = totalStudentsFound;
+    document.getElementById('view-student-stats-sections').textContent = sectionsFound;
+    document.getElementById('view-student-stats').classList.remove('hidden');
 }
 
 async function viewConsolidatedMarks() {
@@ -201,6 +216,7 @@ async function viewConsolidatedMarks() {
     const displayDiv = document.getElementById('consolidated-marks-display');
     const printBtn = document.getElementById('printMarksheetBtn');
     const progressReportPrintBtn = document.getElementById('printProgressReportBtn');
+    const statsContainer = document.getElementById('marks-stats-container');
 
     displayDiv.innerHTML = 'লোড হচ্ছে...';
     printBtn.style.display = 'none';
@@ -218,6 +234,10 @@ async function viewConsolidatedMarks() {
         displayDiv.innerHTML = '<p>এই সেকশনের জন্য কোনো ছাত্রী পাওয়া যায়নি।</p>';
         return;
     }
+
+    // Update Stats
+    document.getElementById('marks-stats-total').textContent = students.length;
+    statsContainer.classList.remove('hidden');
 
     // Fetch subjects dynamically
     // const subjectsRes = await fetch('/api/subjects');
@@ -466,6 +486,10 @@ async function loadUnlockRequests() {
     const requestsBody = document.getElementById('unlock-requests-body');
     const badge = document.getElementById('request-count-badge');
     
+    // Update Stats
+    document.getElementById('unlock-stats-total').textContent = requests.length;
+    document.getElementById('unlock-stats-pending').textContent = requests.filter(r => r.status === 'pending').length;
+
     requestsBody.innerHTML = '';
     const pendingRequests = requests.filter(r => r.status === 'pending');
 
