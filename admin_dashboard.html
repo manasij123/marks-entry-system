@@ -55,9 +55,11 @@
                 </button>
                 
                 <div class="pt-4 mt-4 border-t border-white/10">
-                    <button onclick="logout()" class="w-full flex items-center gap-3 px-4 py-3.5 text-red-300 hover:text-red-200 hover:bg-red-500/10 rounded-xl font-medium transition-all hover:shadow-[0_0_20px_rgba(239,68,68,0.4)] group">
-                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" class="group-hover:-translate-x-1 transition-transform"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-                        Logout
+                    <button onclick="logout()" class="relative w-full flex items-center px-4 py-3.5 rounded-xl font-medium overflow-hidden group bg-red-500/10 text-red-600 transition-colors duration-300 hover:text-white before:absolute before:inset-0 before:w-0 before:bg-red-600 before:transition-[width] before:duration-300 before:ease-out hover:before:w-full before:content-['']">
+                        <span class="relative z-10 flex items-center gap-3 w-full">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" class="group-hover:-translate-x-1 transition-transform"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                            Logout
+                        </span>
                     </button>
                 </div>
             </div>
