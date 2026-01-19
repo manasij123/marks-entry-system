@@ -279,7 +279,11 @@ async function viewSubjectMarks() {
 
     // Generate HTML table for Single Subject
     let tableHTML = `
-        <div class="text-center mb-6">
+        <div class="hidden print-visible text-center mb-6" style="display: none;">
+            <h2 class="text-2xl font-bold text-black uppercase" style="color: black; border: none;">Subject: ${subject}</h2>
+            <p class="text-lg text-black font-semibold" style="color: black;">Year: ${year} | Section: ${section}</p>
+        </div>
+        <div class="text-center mb-6 print-hidden">
             <h2 class="text-xl font-bold text-slate-800">Edit Marks: ${subject}</h2>
             <p class="text-sm text-slate-500">Year: <span class="font-bold">${year}</span> | Section: <span class="font-bold">${section}</span></p>
             <button onclick="handlePrint('consolidated-marks-display')" class="mt-4 inline-flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-violet-600 text-white rounded-full font-bold hover:shadow-lg hover:scale-105 transition-all shadow-md">
@@ -314,18 +318,20 @@ async function viewSubjectMarks() {
         evolutions.forEach(evo => {
             const wVal = studentMarks[evo].W;
             const pVal = studentMarks[evo].P;
+            const displayW = wVal === '-' ? '<span class="print-hidden">-</span>' : wVal;
+            const displayP = pVal === '-' ? '<span class="print-hidden">-</span>' : pVal;
             
             tableHTML += `<td class="border border-slate-200 px-1 py-2 text-center cursor-pointer hover:bg-yellow-100 transition-colors text-xs font-medium ${wVal === '-' ? 'text-slate-300' : 'text-slate-700'}" 
                 data-year="${year}" data-section="${section}" 
                 data-subject="${subject}" data-evo="${evo}" 
                 data-roll="${student.roll}" data-type="W"
-                onclick="makeEditable(this)">${wVal}</td>`;
+                onclick="makeEditable(this)">${displayW}</td>`;
                 
             tableHTML += `<td class="border border-slate-200 px-1 py-2 text-center cursor-pointer hover:bg-yellow-100 transition-colors text-xs font-medium bg-slate-50/30 ${pVal === '-' ? 'text-slate-300' : 'text-slate-700'}" 
                 data-year="${year}" data-section="${section}" 
                 data-subject="${subject}" data-evo="${evo}" 
                 data-roll="${student.roll}" data-type="P"
-                onclick="makeEditable(this)">${pVal}</td>`;
+                onclick="makeEditable(this)">${displayP}</td>`;
         });
         tableHTML += `</tr>`;
     });
@@ -393,7 +399,11 @@ async function viewConsolidatedReadOnly() {
 
     // Generate HTML table
     let tableHTML = `
-        <div class="text-center mb-6">
+        <div class="hidden print-visible text-center mb-6" style="display: none;">
+            <h2 class="text-2xl font-bold text-black uppercase" style="color: black; border: none;">Consolidated Marksheet</h2>
+            <p class="text-lg text-black font-semibold" style="color: black;">Year: ${year} | Section: ${section}</p>
+        </div>
+        <div class="text-center mb-6 print-hidden">
             <h2 class="text-xl font-bold text-slate-800">Full Consolidated Marksheet</h2>
             <p class="text-sm text-slate-500">Year: <span class="font-bold">${year}</span> | Section: <span class="font-bold">${section}</span></p>
             <button onclick="handlePrint('consolidated-marks-display')" class="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-slate-800 text-white rounded-lg font-bold hover:bg-slate-700 transition-colors shadow-lg">
@@ -433,11 +443,13 @@ async function viewConsolidatedReadOnly() {
             evolutions.forEach(evo => {
                 const wVal = studentMarks[sub][evo].W;
                 const pVal = studentMarks[sub][evo].P;
+                const displayW = wVal === '-' ? '<span class="print-hidden">-</span>' : wVal;
+                const displayP = pVal === '-' ? '<span class="print-hidden">-</span>' : pVal;
                 
                 // Read-only cells (No onclick)
-                tableHTML += `<td class="border border-slate-200 px-1 py-2 text-center text-xs font-medium ${wVal === '-' ? 'text-slate-300' : 'text-slate-700'}">${wVal}</td>`;
+                tableHTML += `<td class="border border-slate-200 px-1 py-2 text-center text-xs font-medium ${wVal === '-' ? 'text-slate-300' : 'text-slate-700'}">${displayW}</td>`;
                     
-                tableHTML += `<td class="border border-slate-200 px-1 py-2 text-center text-xs font-medium bg-slate-50/30 ${pVal === '-' ? 'text-slate-300' : 'text-slate-700'}">${pVal}</td>`;
+                tableHTML += `<td class="border border-slate-200 px-1 py-2 text-center text-xs font-medium bg-slate-50/30 ${pVal === '-' ? 'text-slate-300' : 'text-slate-700'}">${displayP}</td>`;
             });
         });
         tableHTML += `</tr>`;
@@ -488,17 +500,18 @@ function makeEditable(td) {
             });
             
             if (response.ok) {
-                td.innerText = newValue === '' ? '-' : newValue;
+                const finalValue = newValue === '' ? '-' : newValue;
+                td.innerHTML = finalValue === '-' ? '<span class="print-hidden">-</span>' : finalValue;
                 td.style.backgroundColor = '#d4edda'; // Success flash color
                 setTimeout(() => td.style.backgroundColor = '', 1000);
             } else {
                 alert('আপডেট করতে সমস্যা হয়েছে।');
-                td.innerText = originalValue;
+                td.innerHTML = originalValue === '-' ? '<span class="print-hidden">-</span>' : originalValue;
             }
         } catch (e) {
             console.error(e);
             alert('সার্ভার এরর।');
-            td.innerText = originalValue;
+            td.innerHTML = originalValue === '-' ? '<span class="print-hidden">-</span>' : originalValue;
         }
     };
 

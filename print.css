@@ -5,6 +5,12 @@
         visibility: visible !important;
     }
 
+    /* Automatic Page Size Calculation */
+    @page {
+        size: auto;
+        margin: 5mm;
+    }
+
     /* 2. Force Black and White */
     body {
         color: #000 !important;
@@ -58,5 +64,15 @@
     /* Remove Sticky Positioning for print */
     .sticky, .md\:sticky {
         position: static !important;
+    }
+
+    /* Hide elements marked to be hidden in print (like dashes) */
+    .print-hidden {
+        display: none !important;
+    }
+
+    /* Show elements marked to be visible in print (like print headers) */
+    .print-visible {
+        display: block !important;
     }
 }
