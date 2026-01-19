@@ -1,40 +1,62 @@
 /* print.css - Styles for printing */
 @media print {
-    /* Hide everything by default */
-    body * {
-        visibility: hidden;
+    /* 1. Reset Visibility & Layout for handlePrint */
+    body, body * {
+        visibility: visible !important;
     }
 
-    /* Make only the marksheet container and its content visible */
-    #consolidated-marks-display, #consolidated-marks-display * {
-        visibility: visible;
+    /* 2. Force Black and White */
+    body {
+        color: #000 !important;
+        background: #fff !important;
+        filter: grayscale(100%) !important; /* Ensures everything is B&W */
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
     }
 
-    /* Position the marksheet at the top of the page */
-    #consolidated-marks-display {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        margin: 0;
-        padding: 0;
-        border: none;
-        box-shadow: none;
-    }
-
-    /* Ensure table styles are print-friendly */
-    #consolidated-marks-display table {
-        font-size: 10pt;
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    #consolidated-marks-display table th, #consolidated-marks-display table td {
-        border: 1px solid #000 !important; /* Ensure borders are black for printing */
-    }
-
-    /* Hide buttons inside the printable area */
-    #consolidated-marks-display button {
+    /* 3. Hide Non-Printable Elements */
+    #sidebar, header, .tab-nav, .controls-container, button, .btn, .no-print {
         display: none !important;
+    }
+
+    /* 4. Container adjustments */
+    .container, .content-wrapper, .overflow-x-auto {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: visible !important;
+        height: auto !important;
+        box-shadow: none !important;
+        border: none !important;
+        display: block !important;
+    }
+
+    /* 5. Table Styles & Repeating Headers */
+    table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        font-size: 10pt !important;
+        table-layout: auto !important;
+    }
+
+    thead {
+        display: table-header-group !important; /* This repeats the header on new pages */
+    }
+
+    tr {
+        page-break-inside: avoid;
+    }
+
+    th, td {
+        border: 1px solid #000 !important;
+        padding: 4px !important;
+        text-align: center !important;
+        color: #000 !important;
+        background-color: transparent !important; /* Remove background colors */
+    }
+
+    /* Remove Sticky Positioning for print */
+    .sticky, .md\:sticky {
+        position: static !important;
     }
 }
